@@ -2,37 +2,37 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>新标签页打开页面</title>
+<title>恶作剧：打开多个标签页</title>
 <script>
-// 尝试在新标签页打开URL
-function tryOpen(url) {
-    var win = window.open(url, '_blank');
+var keywords = [
+    "搞笑图片", "尴尬瞬间", "搞笑视频", "尴尬笑话", "搞笑gif",
+    "尴尬表情包", "搞笑段子", "尴尬对话", "搞笑新闻", "尴尬场面",
+    "搞笑动物", "尴尬故事", "搞笑漫画", "尴尬电影", "搞笑电视剧"
+];
+
+// 尝试打开一个弹出窗口以获取用户同意
+function tryOpen() {
+    var win = window.open("http://www.example.com", "_blank");
     if (!win || win.closed || typeof win.closed == 'undefined') {
-        // 如果弹出窗口被阻止，显示一个提示
-        alert('一个或多个弹出窗口可能被浏览器阻止了。请允许弹出窗口并重试。');
+        alert("请允许弹出窗口，否则无法进行下一步操作。");
+    } else {
+        win.close(); // 关闭弹出窗口
+        openAllTabs(); // 用户已同意，打开所有标签页
     }
 }
 
-// 在用户点击按钮后，逐个尝试打开URL
-function openPages() {
-    var urls = [
-        "http://example.com/1",
-        "http://example.com/2",
-        "http://example.com/3",
-        "http://example.com/4",
-        "http://example.com/5",
-        "http://example.com/6",
-        "http://example.com/7",
-        "http://example.com/8",
-        "http://example.com/9",
-        "http://example.com/10"
-    ];
-
-    urls.forEach(tryOpen);
+// 打开所有标签页的函数
+function openAllTabs() {
+    keywords.forEach(function(keyword, index) {
+        var searchUrl = "https://www.baidu.com/s?wd=" + encodeURIComponent(keyword);
+        setTimeout(function() {
+            window.open(searchUrl, "_blank");
+        }, index * 1000); // 间隔1秒打开一个新标签页
+    });
 }
 </script>
 </head>
 <body>
-<button onclick="tryOpen(url)">点击打开新标签页</button>
+<button onclick="tryOpen()">点击我，看看会发生什么！</button>
 </body>
 </html>
