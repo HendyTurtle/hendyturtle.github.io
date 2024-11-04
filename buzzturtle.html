@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>自动打开新标签页</title>
-    <script>
-        window.onload = function() {
-            var urls = [
-                'url1', // 替换为实际的URL
-                'url2', // 替换为实际的URL
-                'url3', // 替换为实际的URL
-                'url4', // 替换为实际的URL
-                'url5', // 替换为实际的URL
-                'url6', // 替换为实际的URL
-                'url7', // 替换为实际的URL
-                'url8', // 替换为实际的URL
-                'url9', // 替换为实际的URL
-                'url10' // 替换为实际的URL
-            ];
+<meta charset="UTF-8">
+<title>新标签页打开页面</title>
+<script>
+function openPages() {
+    var urls = [
+        "http://example.com/1",
+        "http://example.com/2",
+        "http://example.com/3",
+        "http://example.com/4",
+        "http://example.com/5",
+        "http://example.com/6",
+        "http://example.com/7",
+        "http://example.com/8",
+        "http://example.com/9",
+        "http://example.com/10"
+    ];
 
-            for (var i = 0; i < urls.length; i++) {
-                window.open(urls[i], '_blank');
-            }
-        }
-    </script>
+    for (var i = 0; i < urls.length; i++) {
+        window.open(urls[i], '_blank');
+    }
+}
+</script>
 </head>
 <body>
-    <h1>页面将自动在新标签页打开10个链接</h1>
+<button onclick="openPages()">点击打开新标签页</button>
 </body>
 </html>
