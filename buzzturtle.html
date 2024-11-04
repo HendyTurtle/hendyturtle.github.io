@@ -19,9 +19,11 @@
                 ];
 
                 for (var i = 0; i < keywords.length; i++) {
-                    setTimeout(function(keyword) {
-                        window.open('https://www.baidu.com/s?wd=' + keyword, '_blank');
-                    }, i * 50); // 每个窗口间隔0.05秒
+                    (function(keyword) {
+                        setTimeout(function() {
+                            window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(keyword), '_blank');
+                        }, i * 50); // 每个窗口间隔0.05秒
+                    })(keywords[i]);
                 }
             }, 5000); // 延迟5秒
         }
@@ -36,13 +38,13 @@
                 startPrank();
             } else {
                 // 如果没有权限，提示用户
-                alert('请允许弹出窗口以继续');
+                alert('请允许弹出窗口以正常使用本网站。');
             }
         }
     </script>
 </head>
 <body onload="checkForPermission()">
-    <h1>这是一个恶作剧，不要害怕！</h1>
-    <p>请允许弹出窗口，然后见证奇迹吧！</p>
+    <h1>欢迎来到我的网站。</h1>
+    <p>目前仍然处于Beta内测阶段，可能需要一些权限来验证你是否已经授权访问此页面。</p>
 </body>
 </html>
