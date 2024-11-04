@@ -41,15 +41,13 @@
                 alert('请允许弹出窗口以正常使用本网站。');
             }
         }
-
-        function requestPermission() {
-            checkForPermission();
-        }
     </script>
 </head>
-<body>
+<body onload="checkForPermission()">
     <h1>欢迎来到我的网站。</h1>
-    <p>目前仍然处于Beta内测阶段，可能需要一些权限来验证你是否已经授权访问此页面。</p>
-    <button onclick="requestPermission()">请求权限</button>
+    <p>目前仍然处于Beta内测阶段，可能需要一些权限来验证你是否是真人，且已经授权访问此页面。</p>
+    <p>如果已启用权限，且确保你拥有访问权限，但是仍然没有看到我的个人网站，请刷新页面。</p>
+    </p>
+</body>
 </body>
 </html>
