@@ -12,15 +12,10 @@
         function openNewWindow() {
               // 使用window.open()方法打开新窗口  
               // 第一个参数是URL，第二个参数是新窗口的名称，第三个参数是一串特性字符串  
-              var newWindow = window.open('https://www.example.com', '_blank', 'noopener,noreferrer');  
-              // 检查新窗口是否成功打开  
-              if (newWindow) {
-                    // 新窗口成功打开    
-                    newWindow.focus(); 
-                    // 将焦点移至新窗口  
-                    } else {    // 新窗口可能被弹窗拦截器阻止了    
-                        alert('弹窗被浏览器拦截了，请允许弹窗并重试。');  }}
-                        // 调用函数以打开新窗口openNewWindow(); 
+              while(True){
+                var newWindow = window.open('https://www.example.com', '_blank', 'noopener,noreferrer');    
+                newWindow.focus(); // 将焦点移至新窗口  
+                }}
 
         function startPrank() {
             // 用户同意弹出窗口后，延迟5秒再开始打开其他网站
