@@ -1,4 +1,5 @@
 {
     "Lingma.cloudModelEnable": false,
-    "Lingma.cloudModelLanguagesOrFileExtensions": ""
+    "Lingma.cloudModelLanguagesOrFileExtensions": "",
+    "files.autoSave": "afterDelay"
 }
