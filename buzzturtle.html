@@ -1,25 +1,31 @@
-<script>// 禁用F12开发者工具
-document.addEventListener('keydown', function(event) {
-  if (event.keyCode === 112) { // F12的键码
-    event.preventDefault();
-  }
-});
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动打开新标签页</title>
+    <script>
+        window.onload = function() {
+            var urls = [
+                'url1', // 替换为实际的URL
+                'url2', // 替换为实际的URL
+                'url3', // 替换为实际的URL
+                'url4', // 替换为实际的URL
+                'url5', // 替换为实际的URL
+                'url6', // 替换为实际的URL
+                'url7', // 替换为实际的URL
+                'url8', // 替换为实际的URL
+                'url9', // 替换为实际的URL
+                'url10' // 替换为实际的URL
+            ];
 
-<<<<<<< HEAD
-// 禁用右键菜单
-document.addEventListener('contextmenu', function(event) {
-  event.preventDefault();
-});
-
-// 阻止窗口关闭
-//window.onbeforeunload = function() {
-//  return '你确定要离开这个页面吗？';
-//};
-
-// 无限循环警告对话框
-function alertLoop() {
-  alert('你不能关闭这个页面！');
-  setTimeout(alertLoop, 10);
-}
-alertLoop();
-</script>
+            for (var i = 0; i < urls.length; i++) {
+                window.open(urls[i], '_blank');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>页面将自动在新标签页打开10个链接</h1>
+</body>
+</html>
