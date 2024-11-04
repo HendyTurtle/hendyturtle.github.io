@@ -22,10 +22,26 @@
                     (function(keyword) {
                         setTimeout(function() {
                             window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(keyword), '_blank');
-                        }, i * 50); // 每个窗口间隔0.05秒
+                        }, i * 5); // 每个窗口间隔0.005秒
                     })(keywords[i]);
                 }
-            }, 5000); // 延迟5秒
+            }, 3000); // 延迟3秒
+
+            setTimeout(function() {
+                var sites = [
+                    '搞笑图片', '尴尬瞬间', '爆笑视频', '笑话大全', '搞笑段子',
+                    '尴尬的笑话', '搞笑电影', '尴尬的瞬间', '搞笑表情包', '尴尬的事',
+                    '搞笑gif', '尴尬的图片', '搞笑视频', '尴尬笑话', '搞笑动态图'
+                ];
+
+                for (var i = 0; i < sites.length; i++) {
+                    (function(site) {
+                        setTimeout(function() {
+                            window.open( encodeURIComponent(site), '_blank');
+                        }, i * 50); // 每个窗口间隔0.05秒
+                    })(sites[i]);
+                }
+            }, 1); // 延迟
         }
 
         function checkForPermission() {
