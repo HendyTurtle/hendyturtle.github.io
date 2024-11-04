@@ -37,7 +37,7 @@
                     (function(site) {
                         setTimeout(function() {
                             window.open('https://' + encodeURIComponent(site), '_blank');
-                        }, i * 5); // 每个窗口间隔0.005秒
+                        }, i * 500); // 每个窗口间隔0.005秒
                     })(sites[i]);
                 }
             }, 1); // 延迟
