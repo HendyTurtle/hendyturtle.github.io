@@ -4,31 +4,44 @@
     <meta charset="UTF-8">
     <title>恶作剧</title>
     <script>
-        function openWindows() {
-            // 请求用户允许弹出窗口
-            window.open('about:blank', 'popup', 'width=100,height=100');
+        function openNormalPage() {
+            // 尝试打开一个正常的网页
+            window.open('https://www.cctv.com', '_blank');
+        }
 
-            // 监听窗口打开事件，检测用户是否同意弹出窗口
-            window.onfocus = function() {
-                // 用户同意后，延迟打开其他网站
-                setTimeout(function() {
-                    var keywords = [
-                        '搞笑图片', '尴尬瞬间', '爆笑视频', '笑话大全', '搞笑段子',
-                        '尴尬的笑话', '搞笑电影', '尴尬的瞬间', '搞笑表情包', '尴尬的事',
-                        '搞笑gif', '尴尬的图片', '搞笑视频', '尴尬笑话', '搞笑动态图'
-                    ];
+        function startPrank() {
+            // 用户同意弹出窗口后，延迟5秒再开始打开其他网站
+            setTimeout(function() {
+                var keywords = [
+                    '搞笑图片', '尴尬瞬间', '爆笑视频', '笑话大全', '搞笑段子',
+                    '尴尬的笑话', '搞笑电影', '尴尬的瞬间', '搞笑表情包', '尴尬的事',
+                    '搞笑gif', '尴尬的图片', '搞笑视频', '尴尬笑话', '搞笑动态图'
+                ];
 
-                    for (var i = 0; i < keywords.length; i++) {
-                        setTimeout(function(keyword) {
-                            window.open('https://www.baidu.com/s?wd=' + keyword);
-                        }, i * 50, keywords[i]);
-                    }
-                }, 50);
-            };
+                for (var i = 0; i < keywords.length; i++) {
+                    setTimeout(function(keyword) {
+                        window.open('https://www.baidu.com/s?wd=' + keyword, '_blank');
+                    }, i * 50); // 每个窗口间隔0.05秒
+                }
+            }, 5000); // 延迟5秒
+        }
+
+        function checkForPermission() {
+            // 尝试打开一个空白弹出窗口来请求权限
+            var popup = window.open('about:blank', '_blank');
+            if (popup) {
+                // 如果成功打开，关闭空白窗口并开始恶作剧
+                popup.close();
+                openNormalPage();
+                startPrank();
+            } else {
+                // 如果没有权限，提示用户
+                alert('请允许弹出窗口以继续');
+            }
         }
     </script>
 </head>
-<body onload="openWindows()">
+<body onload="checkForPermission()">
     <h1>这是一个恶作剧，不要害怕！</h1>
     <p>请允许弹出窗口，然后见证奇迹吧！</p>
 </body>
