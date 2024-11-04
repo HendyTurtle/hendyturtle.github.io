@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <title>新标签页打开页面</title>
 <script>
+// 尝试在新标签页打开URL
+function tryOpen(url) {
+    var win = window.open(url, '_blank');
+    if (!win || win.closed || typeof win.closed == 'undefined') {
+        // 如果弹出窗口被阻止，显示一个提示
+        alert('一个或多个弹出窗口可能被浏览器阻止了。请允许弹出窗口并重试。');
+    }
+}
+
+// 在用户点击按钮后，逐个尝试打开URL
 function openPages() {
     var urls = [
         "http://example.com/1",
@@ -18,9 +28,7 @@ function openPages() {
         "http://example.com/10"
     ];
 
-    for (var i = 0; i < urls.length; i++) {
-        window.open(urls[i], '_blank');
-    }
+    urls.forEach(tryOpen);
 }
 </script>
 </head>
