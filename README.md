@@ -4,7 +4,7 @@ My personal website (still in development), based on vCard.
 
 ## Demo
 
-* [Demo Website (Still In Developing Progress)](https://hendyturtle.site/))
+* [Demo Website (Still In Developing Progress)](https://hendyturtle.site/)
 
 
 ## Contact
