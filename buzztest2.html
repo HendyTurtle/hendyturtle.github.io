@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>CPU性能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #performanceData {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>CPU性能测试</h1>
+    <button id="startButton">开始测试</button>
+    <div id="performanceData"></div>
+
+    <script>
+        // 获取性能数据的函数
+        function getPerformanceData() {
+            const perfEntries = performance.getEntriesByType('measure');
+            let totalDuration = 0;
+            for (const entry of perfEntries) {
+                totalDuration += entry.duration;
+            }
+            return totalDuration / perfEntries.length || 0;
+        }
+
+        // 显示性能数据
+        function displayPerformanceData() {
+            const avgDuration = getPerformanceData();
+            document.getElementById('performanceData').innerText = `平均处理时间: ${avgDuration.toFixed(2)} ms`;
+        }
+
+        // CPU密集型任务
+        function cpuIntensiveTask() {
+            const start = performance.now();
+            let sum = 0;
+            for (let i = 0; i < 1e9; i++) {
+                sum += Math.sqrt(i);
+            }
+            const end = performance.now();
+            performance.measure('cpuTask', start, end);
+        }
+
+        // 开始测试
+        document.getElementById('startButton').addEventListener('click', () => {
+            setInterval(() => {
+                cpuIntensiveTask();
+                displayPerformanceData();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
