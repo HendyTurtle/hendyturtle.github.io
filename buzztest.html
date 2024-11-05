@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>全屏示例</title>
+<script>
+// 检测请求全屏模式是否成功
+function isFullScreen() {
+  return (document.fullScreenElement && document.fullScreenElement !== null) ||    // 针对旧版API
+         (document.mozFullScreen || document.webkitIsFullScreen);                 // 针对特定浏览器
+}
+
+// 请求全屏模式
+function requestFullScreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.webkitRequestFullScreen) {
+    element.webkitRequestFullScreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  }
+}
+
+// 退出全屏模式
+function exitFullScreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  }
+}
+
+// 切换全屏模式的函数
+function toggleFullScreen() {
+  if (!isFullScreen()) {
+    requestFullScreen(document.documentElement); // 使用整个页面文档作为元素
+  } else {
+    exitFullScreen();
+  }
+}
+
+// 在页面加载时尝试进入全屏模式
+window.onload = function() {
+  toggleFullScreen();
+};
+
+</script>
+</head>
+<body>
+
+<button onclick="toggleFullScreen()">切换全屏模式</button>
+
+</body>
+</html>
