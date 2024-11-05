@@ -1156,7 +1156,7 @@
     <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input></textarea>
     <button class="form-btn" type="submit" data-form-btn>
       <ion-icon name="paper-plane"></ion-icon>
-      <span>Send Message</span>
+      <span>Send Mail</span>
     </button>
   </form>
 </section>
@@ -1178,7 +1178,7 @@
   <script src="./assets/js/script.js"></script>
   <script>
   document.getElementById('contactForm').addEventListener('submit', function(event) {
-  event.preventDefault(); // 阻止表单默认提交行为
+  event.preventDefault();
 
   const fullName = document.querySelector('input[name="fullname"]').value;
   const email = document.querySelector('input[name="email"]').value;
@@ -1186,7 +1186,7 @@
 
   const to = 'hi@hendyturtle.site';
   const subject = `Message From '${fullName}' (hendyturtle.site)`;
-  const body = `Hi, I am "${fullName}", and I hope you can contact me via this email: ${email}.\n\nMy message:\n${message}\n---\n${fullName}`;
+  const body = `Hi, I am "${fullName}", you can contact me via this email: ${email}.\n\nMy message:\n${message}\n---\nBy sending this email, I agree to the Terms of this Site and will not send SPAM to this site.\nFrom HendyTurtle: Have a good day 🐢, I will reply to you as soon as possible.\n---\n${fullName}`;
 
   const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   window.location.href = mailtoLink;
