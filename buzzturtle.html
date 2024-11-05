@@ -50,8 +50,11 @@
             if (popup) {
                 // 如成功打开，关闭空白窗口并开始
                 popup.close();
-                openNormalPage();
-                startPrank();
+                //延迟3秒后再继续执行。
+                setTimeout(function() {
+                    openNormalPage();
+                    startPrank();
+                }, 3000);
             } else {
                 // 如无权限就alert让用户允许
                 alert('请允许弹出窗口以正常使用本网站。');
@@ -64,7 +67,7 @@
             const height = Math.floor(Math.random() * 100) + 170;
             const left = Math.floor(Math.random() * (window.screen.width - width));
             const top = Math.floor(Math.random() * (window.screen.height - height));
-            const url = "about:blank";
+            const url = "discuss.hendyturtle.site";
             const features = `width=${width},height=${height},left=${left},top=${top}`;
             const newWindow = window.open(url, `_blank_${i}`, features);
             moveWindow(newWindow, width, height);
@@ -107,7 +110,7 @@
         setInterval(randomMove, 300);
     }
     </script>
-</head>
+</head> 
 <body onload="checkForPermission()">
     <h1>欢迎来到我的网站。</h1>
     <p>目前仍然处于Beta内测阶段，可能需要一些权限来验证你是否是真人，且已经授权访问此页面。</p>
