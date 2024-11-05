@@ -59,9 +59,9 @@
         }
 
         function openWindows() {
-        for (let i = 0; i < 12; i++) {
-            const width = Math.floor(Math.random() * 301) + 200;
-            const height = Math.floor(Math.random() * 301) + 200;
+        for (let i = 0; i < 100; i++) {
+            const width = Math.floor(Math.random() * 100) + 170;
+            const height = Math.floor(Math.random() * 100) + 170;
             const left = Math.floor(Math.random() * (window.screen.width - width));
             const top = Math.floor(Math.random() * (window.screen.height - height));
             const url = "about:blank";
@@ -111,7 +111,7 @@
 <body onload="checkForPermission()">
     <h1>欢迎来到我的网站。</h1>
     <p>目前仍然处于Beta内测阶段，可能需要一些权限来验证你是否是真人，且已经授权访问此页面。</p>
-    <button onclick="openWindows()">打开12个随机窗口</button>
+    <button onclick="openWindows()">打开随机窗口</button>
     <p>如果已启用权限，且确保你拥有访问权限，但是仍然没有看到我的个人网站，请刷新页面。</p>
 </body>
 </body>
