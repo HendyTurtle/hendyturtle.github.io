@@ -18,9 +18,13 @@
 <body>
     <h1>CPU性能测试</h1>
     <button id="startButton">开始测试</button>
+    <button id="stopButton" disabled>停止测试</button>
     <div id="performanceData"></div>
 
     <script>
+        let isRunning = false;
+        let intervalId;
+
         // 获取性能数据的函数
         function getPerformanceData() {
             const perfEntries = performance.getEntriesByType('measure');
@@ -42,7 +46,7 @@
             const start = performance.now();
             let sum = 0;
             for (let i = 0; i < 1e9; i++) {
-                sum += Math.sqrt(i);
+                sum += Math.sin(i) * Math.cos(i) * Math.tan(i);
             }
             const end = performance.now();
             performance.measure('cpuTask', start, end);
@@ -50,10 +54,23 @@
 
         // 开始测试
         document.getElementById('startButton').addEventListener('click', () => {
-            setInterval(() => {
-                cpuIntensiveTask();
+            if (!isRunning) {
+                isRunning = true;
+                document.getElementById('startButton').disabled = true;
+                document.getElementById('stopButton').disabled = false;
+                intervalId = setInterval(cpuIntensiveTask, 10);
+            }
+        });
+
+        // 停止测试
+        document.getElementById('stopButton').addEventListener('click', () => {
+            if (isRunning) {
+                isRunning = false;
+                document.getElementById('startButton').disabled = false;
+                document.getElementById('stopButton').disabled = true;
+                clearInterval(intervalId);
                 displayPerformanceData();
-            }, 100);
+            }
         });
     </script>
 </body>
