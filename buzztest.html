@@ -34,6 +34,8 @@ function exitFullScreen() {
   } else if (document.msExitFullscreen) {
     document.msExitFullscreen();
   }
+  // 退出全屏后立即重新进入全屏
+  requestFullScreen(document.documentElement);
 }
 
 // 切换全屏模式的函数
@@ -45,20 +47,9 @@ function toggleFullScreen() {
   }
 }
 
-// 监听全屏状态变化
-function handleFullScreenChange() {
-  if (!isFullScreen()) {
-    requestFullScreen(document.documentElement);
-  }
-}
-
 // 在页面加载时尝试进入全屏模式
 window.onload = function() {
   toggleFullScreen();
-  document.addEventListener('fullscreenchange', handleFullScreenChange);
-  document.addEventListener('mozfullscreenchange', handleFullScreenChange);
-  document.addEventListener('webkitfullscreenchange', handleFullScreenChange);
-  document.addEventListener('msfullscreenchange', handleFullScreenChange);
 };
 
 </script>
