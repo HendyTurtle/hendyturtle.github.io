@@ -57,23 +57,12 @@
                 }, 3000);
             } else {
                 // 如无权限就alert让用户允许
-                alert('请允许弹出窗口以正常使用本网站。');
+                alert('请允许弹出窗口，并不屏蔽 RECAPTCHA 验证码以正常使用本网站。');
             }
         }
 
         function openWindows() {
         for (let i = 0; i < 100; i++) {
-            //强制进入全屏，避免用户退出
-            const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) { /* Firefox */
-                elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE/Edge */
-                elem.msRequestFullscreen();
-            }
             const width = Math.floor(Math.random() * 100) + 170;
             const height = Math.floor(Math.random() * 100) + 170;
             const left = Math.floor(Math.random() * (window.screen.width - width));
