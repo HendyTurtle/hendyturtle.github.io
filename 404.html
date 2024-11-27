@@ -1,7 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>404 - 网页不存在</title>
+    <title>网页不存在 (Err_404) - 小龟壳官方网站</title>
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <meta name="baidu" content="noindex">
+    <meta name="sogou" content="noindex">
+    <meta name="bingbot" content="noindex">
+    <meta name="yandex" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="404 - 小龟壳官网网站">
+    <meta name="keywords" content="404, hendyturtle, 小龟壳官网, 404页面">
+    <meta name="author" content="Hendy Turtle">
+    <link rel="icon" href="https://hendyturtle.site/assets/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="https://hendyturtle.site/assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://hendyturtle.site/assets/css/style.css">
+</head>
     <style type="text/css">
         .ui-error-box{        
             width: 100%;
@@ -11,52 +28,63 @@
             padding-top: 100px;
             font-size: 20px;
             color: #333;
-            background-image: url(https://www.hwyxxx.com/static/upload/image/20221017/1665996101849758.jpg); height:1000px; margin: 80px auto;
-            color: #eb6100; font-weight: bold;
+            background-image: url(https://hendyturtle.site/assets/images/404-bg.jpeg); height:400px; margin: 80px auto;
+            color: #c3e3ec; font-weight: bold;
          
-    }
+        }
+        /* 跳转按钮样式 */
+        .ui-error-box button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px; text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+        }
+        .ui-error-box button:hover {
+            background-color: #45a049;
+            color: white;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+        }
+        .ui-error-box button:active {
+            background-color: #45a049;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        .ui-error-box h3 {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .ui-error-box h3 a {
+        
+            text-decoration: none;
+        }
+        .ui-error-box h3 a:hover {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="ui-error-box">
-        <p>404错误<br>网页不存在或者系统内部错误<br>对您造成不便我们感到非常抱歉。</p>
+        <p>Error 404 - 404 错误<br>网页不存在或者系统内部错误<br>对您造成不便我们感到非常抱歉。</p><br>
+        <button onclick="window.location.href='https://hendyturtle.site'">返回首页</button>
+        <!-- h3>快速链接</h3>
+        <li>
+            <a href="https://hendyturtle.site">小龟壳官网</a>
+            <a href="https://discuss.hendyturtle.site">TurtleNet 论坛</a>
+        </li -->
     </div>
 </body> 
+<footer>
 <script>
-    // 以下代码将在页面加载0.5秒后，显示一个即将跳转提示弹窗（用HTML实现模拟弹窗，不是alert）
-    // 然后等待3秒后跳转到hendyturtle.site首页。
-    // 如果点击了弹窗中的“取消”按钮，则不跳转。
-    // 下面也会写实时渲染的弹窗。
-    setTimeout(function() {
-        var div = document.createElement('div');
-        //div.style.position = 'fixed';
-        //div.style.top = '0';
-        //div.style.left = '0';
-        //div.style.width = '100%';
-        //div.style.height = '100%';
-        //div.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        //div.style.zIndex = '9999';
-        //div.style.display = 'flex';
-        //div.style.justifyContent = 'center';
-        //div.style.alignItems = 'center';
-        div.innerHTML = '<div style="background-color: #fff; padding: 20px; border-radius: 5px; text-align: center; width: 300px; height: 200px; margin: 0 auto;"><p>即将跳转到首页</p><button id="confirmBtn" style="margin-right: 10px;">确定</button><button id="cancelBtn">取消</button></div>';
-        document.body.appendChild(div);
-
-        document.getElementById('confirmBtn').addEventListener('click', function() {
-            window.location.href = 'https://hendyturtle.site';
-        });
-
-        document.getElementById('cancelBtn').addEventListener('click', function() {
-            div.style.display = 'none';
-        }
-        document.body.appendChild(div);
-
-        document.getElementById('confirmBtn').addEventListener('click', function() {
-            window.location.href = 'https://hendyturtle.site';
-        });
-
-        document.getElementById('cancelBtn').addEventListener('click', function() {
-            div.style.display = 'none';
-        });
-        })
+    var date = new Date();
+    var year = date.getFullYear();
+    document.write('<p>Copyright © ' + year + ' <a href="https://hendyturtle.site">小龟壳官网</a></p>');
 </script>
+</footer>
+</html>
