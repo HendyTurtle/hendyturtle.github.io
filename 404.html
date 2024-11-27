@@ -3,16 +3,18 @@
 <head>
     <title>404 - 网页不存在</title>
     <style type="text/css">
-        .ui-error-box{
- 
+        .ui-error-box{        
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            text-align: center;
+            padding-top: 100px;
+            font-size: 20px;
+            color: #333;
             background-image: url(/images/error_bj.jpg); height:260px; width: 410px; margin: 80px auto;
             color: #eb6100; font-weight: bold; padding: 140px 0 0 198px;
          
-}
-        .ui-error-box a{
-            color: #037cd6; margin-right: 20px;
-}
- 
+    }
     </style>
 </head>
 <body>
@@ -21,10 +23,40 @@
     </div>
 </body> 
 <script>
-    // 以下代码将在页面加载完成后，等待3秒后跳转到百度首页
-    setTimeout(function(){
-        alert("3秒后跳转到百度首页");
-    },3000)
-    window.location.href = "http://www.baidu.com";
-    // 这段代码将页面重定向到百度首页
+    // 以下代码将在页面加载0.5秒后，显示一个即将跳转提示弹窗（用HTML实现模拟弹窗，不是alert）
+    // 然后等待3秒后跳转到hendyturtle.site首页。
+    // 如果点击了弹窗中的“取消”按钮，则不跳转。
+    // 下面也会写实时渲染的弹窗。
+    setTimeout(function() {
+        var div = document.createElement('div');
+        //div.style.position = 'fixed';
+        //div.style.top = '0';
+        //div.style.left = '0';
+        //div.style.width = '100%';
+        //div.style.height = '100%';
+        //div.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        //div.style.zIndex = '9999';
+        //div.style.display = 'flex';
+        //div.style.justifyContent = 'center';
+        //div.style.alignItems = 'center';
+        div.innerHTML = '<div style="background-color: #fff; padding: 20px; border-radius: 5px; text-align: center; width: 300px; height: 200px; margin: 0 auto;"><p>即将跳转到首页</p><button id="confirmBtn" style="margin-right: 10px;">确定</button><button id="cancelBtn">取消</button></div>';
+        document.body.appendChild(div);
+
+        document.getElementById('confirmBtn').addEventListener('click', function() {
+            window.location.href = 'https://hendyturtle.site';
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            div.style.display = 'none';
+        }
+        document.body.appendChild(div);
+
+        document.getElementById('confirmBtn').addEventListener('click', function() {
+            window.location.href = 'https://hendyturtle.site';
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            div.style.display = 'none';
+        });
+        })
 </script>
