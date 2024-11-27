@@ -1,0 +1,63 @@
+# robots.txt
+# https://www.robotstxt.org/orig.html
+
+# 一般用户代理
+User-agent: *
+Disallow: /
+Disallow: /circuit/
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+
+# 搜索引擎爬虫 - Google
+User-agent: Googlebot
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+Disallow: /circuit/
+
+# 搜索引擎爬虫 - Bing
+User-agent: bingbot
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+Disallow: /circuit/
+
+# 搜索引擎爬虫 - Yahoo
+User-agent: Yahoo! Slurp
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+Disallow: /circuit/
+
+# 搜索引擎爬虫 - DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+Disallow: /circuit/
+
+# 搜索引擎爬虫 - Baidu
+User-agent: Baiduspider
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+Disallow: /circuit/
+
+# 搜索引擎爬虫 - Yandex
+User-agent: YandexBot
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+Disallow: /circuit/
+
+# 搜索引擎爬虫 - Sogou
+User-agent: Sogou web spider
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /index.html
+Disallow: /circuit/
+
+
+
+Sitemap: https://www.example.com/sitemap.xml
