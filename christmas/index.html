@@ -1,8 +1,21 @@
+
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- 移除或注释掉 <base> 标签 -->
-    <!-- <base href="/" /> -->
+    <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+    <base href="https://decomytree.com/" />
 
     <meta charset="UTF-8" />
     <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
@@ -12,13 +25,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="deco_my_tree" />
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/your-repo/main/icons/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/your-repo/main/favicon.ico" />
+    <link rel="icon" type="image/png" href="favicon.ico" />
 
     <title>Deco My Tree</title>
-    <link rel="manifest" href="https://raw.githubusercontent.com/your-repo/main/manifest.json" />
+    <link rel="manifest" href="manifest.json" />
 
     <meta
       name="theme-color"
@@ -78,7 +91,7 @@
       const serviceWorkerVersion = "3463334342";
     </script>
     <!-- This script adds the flutter initialization JS code -->
-    <script src="https://raw.githubusercontent.com/your-repo/main/flutter.js" defer=""></script>
+    <script src="flutter.js" defer=""></script>
 
     <meta
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -183,26 +196,26 @@
       <picture>
         <source
           srcset="
-            https://raw.githubusercontent.com/your-repo/main/splash/img/light-1x.png 1x,
-            https://raw.githubusercontent.com/your-repo/main/splash/img/light-2x.png 2x,
-            https://raw.githubusercontent.com/your-repo/main/splash/img/light-3x.png 3x,
-            https://raw.githubusercontent.com/your-repo/main/splash/img/light-4x.png 4x
+            splash/img/light-1x.png 1x,
+            splash/img/light-2x.png 2x,
+            splash/img/light-3x.png 3x,
+            splash/img/light-4x.png 4x
           "
           media="(prefers-color-scheme: light)"
         />
         <source
           srcset="
-            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-1x.png 1x,
-            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-2x.png 2x,
-            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-3x.png 3x,
-            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-4x.png 4x
+            splash/img/dark-1x.png 1x,
+            splash/img/dark-2x.png 2x,
+            splash/img/dark-3x.png 3x,
+            splash/img/dark-4x.png 4x
           "
           media="(prefers-color-scheme: dark)"
         />
         <img
           class="center"
           aria-hidden="true"
-          src="https://raw.githubusercontent.com/your-repo/main/splash/img/light-1x.png"
+          src="splash/img/light-1x.png"
           alt=""
         />
       </picture>
