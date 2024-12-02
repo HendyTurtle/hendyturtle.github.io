@@ -1,40 +1,231 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>HendyTurtle 的圣诞树</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="装饰我的圣诞树🎄">
-    <meta name="theme-color" content="#000000">
-    <meta name="msapplication-TileColor" content="#000000">
-    <meta name="msapplication-TileImage" content="https://decomytree.com/static/images/favicon.ico">
-    <meta name="msapplication-config" content="https://decomytree.com/static/images/browserconfig.xml">
-    <meta name="application-name" content="Christmas Tree">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Christmas Tree">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
+  <head>
+    <!-- 移除或注释掉 <base> 标签 -->
+    <!-- <base href="/" /> -->
+
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="Decorate Friend's Tree for Christmas🎅" />
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="deco_my_tree" />
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/your-repo/main/icons/apple-touch-icon.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/your-repo/main/favicon.ico" />
+
+    <title>Deco My Tree</title>
+    <link rel="manifest" href="https://raw.githubusercontent.com/your-repo/main/manifest.json" />
+
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#02534C"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#02534C"
+    />
+
+    <meta
+      property="og:image"
+      content="https://d2jn18fa7i95tx.cloudfront.net/open-graph-image/og-image-0.png"
+    />
+    <meta
+      property="og:description"
+      content="Decorate Friend's Tree for Christmas🎅"
+    />
+    <meta property="og:title" content="🎄DECO MY TREE🎄" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="“@dmt_official”" />
+    <meta name="twitter:title" content="🎄DECO MY TREE🎄" />
+    <meta
+      name="twitter:description"
+      content="Decorate Friend's Tree for Christmas🎅"
+    />
+    <meta
+      name="twitter:image"
+      content="https://d2jn18fa7i95tx.cloudfront.net/open-graph-image/twitter-card-0.png"
+    />
+
+    <meta
+      name="keyword"
+      content="fashion, game, sns, instagram, music, trend, tiktok, study, university, beauty, outfit, ootd, skincare, pop, netflix, challenges, snapchat, reels, shorts, VR, iPhone, college, Gen Z"
+    />
+
+    <meta name="google-adsense-account" content="ca-pub-4171019089986178" />
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4171019089986178"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      function setMetaThemeColor(color) {
+        document
+          .querySelector('meta[name="theme-color"]')
+          .setAttribute("content", color);
+      }
+    </script>
+
+    <script>
+      // The value below is injected by flutter build, do not touch.
+      const serviceWorkerVersion = "3463334342";
+    </script>
+    <!-- This script adds the flutter initialization JS code -->
+    <script src="https://raw.githubusercontent.com/your-repo/main/flutter.js" defer=""></script>
+
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      name="viewport"
+    />
+
+    <style id="splash-screen-style">
+      .flutter-loader {
+        z-index: 999999;
+      }
+
+      #splash {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        z-index: 999998;
+        opacity: 1;
+        /* animation type and duration */
+        transition: opacity 0.25s;
+        background-color: #d6e6d9;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #splash.remove {
+        /* enable click through when run animation */
+        pointer-events: none;
+        /* start animation */
+        opacity: 0;
+      }
+
+      #splash .center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+
+      #splash .contain {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      #splash .stretch {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      #splash .cover {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #splash .bottom {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        -ms-transform: translate(-50%, 0);
+        transform: translate(-50%, 0);
+      }
+
+      #splash .bottomLeft {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+
+      #splash .bottomRight {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #splash {
+          background-color: #d6e6d9;
         }
-        iframe {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+      }
     </style>
-</head>
-<body>
-    <iframe src="https://decomytree.com/home?hashedId=mCyjgPlAEdeA" frameborder="0" allowfullscreen></iframe>
-</body>
+    <script id="splash-screen-script">
+      function removeSplashFromWeb() {
+        const splashElement = document.getElementById("splash");
+        splashElement.classList.add("remove");
+        setTimeout(function () {
+          splashElement.remove();
+          document.getElementById("splash-screen-script")?.remove();
+        }, 750 /* animation time + wait rendering and others(500ms) */);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="splash">
+      <picture>
+        <source
+          srcset="
+            https://raw.githubusercontent.com/your-repo/main/splash/img/light-1x.png 1x,
+            https://raw.githubusercontent.com/your-repo/main/splash/img/light-2x.png 2x,
+            https://raw.githubusercontent.com/your-repo/main/splash/img/light-3x.png 3x,
+            https://raw.githubusercontent.com/your-repo/main/splash/img/light-4x.png 4x
+          "
+          media="(prefers-color-scheme: light)"
+        />
+        <source
+          srcset="
+            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-1x.png 1x,
+            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-2x.png 2x,
+            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-3x.png 3x,
+            https://raw.githubusercontent.com/your-repo/main/splash/img/dark-4x.png 4x
+          "
+          media="(prefers-color-scheme: dark)"
+        />
+        <img
+          class="center"
+          aria-hidden="true"
+          src="https://raw.githubusercontent.com/your-repo/main/splash/img/light-1x.png"
+          alt=""
+        />
+      </picture>
+    </div>
+
+    <script>
+      window.addEventListener("load", function (ev) {
+        // Download main.dart.js
+        _flutter.loader.loadEntrypoint({
+          serviceWorker: {
+            serviceWorkerVersion: serviceWorkerVersion,
+          },
+          onEntrypointLoaded: function (engineInitializer) {
+            engineInitializer
+              .initializeEngine({
+                useColorEmoji: true,
+              })
+              .then(function (appRunner) {
+                appRunner.runApp();
+              });
+          },
+        });
+      });
+    </script>
+  </body>
 </html>
-<!--From https://decomytree.com/home?hashedId=mCyjgPlAEdeA-->
