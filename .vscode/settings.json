@@ -1,5 +1,7 @@
 {
     "Lingma.cloudModelEnable": false,
     "Lingma.cloudModelLanguagesOrFileExtensions": "",
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "Codegeex.CompletionDelay": 0.3,
+    "Codegeex.GenerationPreference": "automatic"
 }
