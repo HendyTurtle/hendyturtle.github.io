@@ -167,6 +167,13 @@
           <p>It allows you to edit HTML code and preview the changes in real-time.</p>
           <p>Feel free to use it for your HTML editing needs!</p>
           <p style="text-align: right; margin-right: 10px;">HendyTurtle</p>
+          <hr>
+          <h3>Updates</h3>
+          <ul>
+            <li>Added support for auto-close brackets and tags.</li>
+            <li>Improved code formatting and indentation.</li>
+            <li>Added a placeholder text.</li>
+          </ul>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
@@ -185,38 +192,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/lint/html-lint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/comment/comment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/selection/active-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/display/placeholder.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const editor = document.getElementById('html-code');
-            const previewWindow = document.getElementById('preview-window').contentDocument;
-            const formatButton = document.getElementById('format-code');
-            const saveButton = document.getElementById('save-file');
-            const loadButton = document.getElementById('load-file');
-            const themeButton = document.getElementById('switch-theme');
-            const aboutButton = document.getElementById('open-about');
-            const aboutDiv = document.getElementById('about');
-
-            // 初始化CodeMirror
-            const codeMirror = CodeMirror.fromTextArea(editor, {
-                mode: 'htmlmixed',
-                lineNumbers: true,
-                theme: 'monokai',
-                autoCloseTags: true,
-                matchBrackets: true,
-                foldGutter: true,
-                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-                lint: true,
-                autoCloseBrackets: true,
-                lineWrapping: true,
-                styleActiveLine: true,
-                highlightSelectionMatches: {showToken: /\w/},
-                extraKeys: {"Ctrl-Space": "autocomplete"} // 添加自动补全快捷键
-            });
-
-            // 启用自动补全功能
-            codeMirror.on('cursorActivity', function() {
-                codeMirror.showHint({hint: CodeMirror.hint.html});
-            });
+      document.addEventListener('DOMContentLoaded', function() {
+        const editor = document.getElementById('html-code');
+        const previewWindow = document.getElementById('preview-window').contentDocument;
+        const formatButton = document.getElementById('format-code');
+        const saveButton = document.getElementById('save-file');
+        const loadButton = document.getElementById('load-file');
+        const themeButton = document.getElementById('switch-theme');
+        const aboutButton = document.getElementById('open-about');
+        const aboutDiv = document.getElementById('about');
+    
+        // 初始化CodeMirror
+        const codeMirror = CodeMirror.fromTextArea(editor, {
+            mode: 'htmlmixed',
+            lineNumbers: true,
+            theme: 'monokai',
+            autoCloseTags: true,
+            matchBrackets: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            lint: true,
+            autoCloseBrackets: true,
+            lineWrapping: true,
+            styleActiveLine: true,
+            highlightSelectionMatches: {showToken: /\w/},
+            extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment"}, // 添加自动补全和注释快捷键
+            placeholder: "欢迎来到 Hyper Studio！\n你可以上传文件，或者在这里输入你的HTML代码...\n\n<!DOCTYPE html>\n<html>\n<head>\n<title>Welcome to Hyper Studio</title>\n</head>\n<body>\n\n<h1>Hello World</h1\n<p>Start typing, or upload an HTML file!</p>\n</body>\n</html>", // 添加占位符
+        });
+    
+        // 启用自动补全功能
+        codeMirror.on('cursorActivity', function() {
+            codeMirror.showHint({hint: CodeMirror.hint.html});
+        });
 
             // 监听编辑器内容的变化
             codeMirror.on('change', function() {
