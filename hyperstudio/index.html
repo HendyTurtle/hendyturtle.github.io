@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hyper Studio</title>
+    <title>在线HTML编译器</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,7 +23,7 @@
             height: 80%;
             border: 1px solid #333;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            flex-direction: column; 
+            flex-direction: row; /* 修改为行布局 */
             background-color: #252526;
             border-radius: 8px;
             overflow: hidden;
@@ -31,7 +31,8 @@
 
         .toolbar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* 使内容靠左对齐 */
+            align-items: center; /* 垂直居中对齐 */
             padding: 10px 20px;
             background-color: #333;
             border-bottom: 1px solid #444;
@@ -42,6 +43,12 @@
             z-index: 1000;
         }
 
+        .toolbar span {
+            margin-left: auto; /* 将文本推到最右边 */
+            color: #D4D4D4;
+            font-weight: bold;
+        }
+
         button {
             background-color: #3C3C3C;
             color: #D4D4D4;
@@ -50,6 +57,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-right: 10px; /* 添加右边距 */
         }
 
         button:hover {
@@ -57,7 +65,6 @@
         }
 
         .editor, .preview {
-            width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -65,6 +72,11 @@
 
         .editor {
             border-right: 1px solid #444;
+            width: 50%; /* 设置宽度为50% */
+        }
+
+        .preview {
+            width: 50%; /* 设置宽度为50% */
         }
 
         #html-code {
@@ -138,16 +150,23 @@
         <button id="load-file">上传文件</button>
         <button id="switch-theme">切换主题</button>
         <button id="open-about">关于</button>
+        <span>Hyper Studio Code</span> <!-- 添加文本 -->
     </div>
     <div class="container">
         <div class="editor">
-            <textarea id="html-code"></textarea>
+            <textarea id="html-code" style="height: 100%;"></textarea>
         </div>
+
         <div class="preview">
             <iframe id="preview-window" srcdoc=""></iframe>
         </div>
-        <div id="about" style="display: none; width: 100%; height: 20%; background-color: #000; color: #0F0; padding: 10px;">
-            <p>Hyper Studio - HendyTurtle - An online HTML editor based on CodeMirror.</p>
+        <div id="about" style="display: none; width: 100%; height: 100%; background-color: #000; color: #0F0; padding: 10px;">
+          <h1>Hyper Studio Code</h1>
+          <p>Version 2025.1.14</p>
+          <p>Hyper Studio Codeis an online HTML editor powered by CodeMirror.</p>
+          <p>It allows you to edit HTML code and preview the changes in real-time.</p>
+          <p>Feel free to use it for your HTML editing needs!</p>
+          <p style="text-align: right; margin-right: 10px;">HendyTurtle</p>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
@@ -220,7 +239,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'document.html';
+                a.download = '网页文档 - 来自 Hyper Studio Code.html';
                 a.click();
                 URL.revokeObjectURL(url);
             });
@@ -229,7 +248,8 @@
             loadButton.addEventListener('click', function() {
                 const input = document.createElement('input');
                 input.type = 'file';
-                input.accept = '.html';
+                // 添加你想要的文件类型
+                input.accept = '.html, .mhtml, .htm, .css, .js, .xhtml, .xhtm, .mht';
                 input.onchange = function(event) {
                     const file = event.target.files[0];
                     if (file) {
@@ -244,10 +264,10 @@
             });
 
             // 切换主题
-            let isDarkTheme = true;
             themeButton.addEventListener('click', function() {
-                isDarkTheme = !isDarkTheme;
-                codeMirror.setOption('theme', isDarkTheme ? 'monokai' : 'default');
+                const currentTheme = codeMirror.getOption('theme');
+                const newTheme = currentTheme === 'monokai' ? 'default' : 'monokai';
+                codeMirror.setOption('theme', newTheme);
             });
 
             // 关于
