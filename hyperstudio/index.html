@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在线HTML编译器</title>
+    <title>Hyper Studio</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -35,7 +35,7 @@
             padding: 10px 20px;
             background-color: #333;
             border-bottom: 1px solid #444;
-            width: 100%;
+            width: 98%;
             position: fixed;
             top: 0;
             left: 0;
@@ -133,11 +133,11 @@
 </head>
 <body>
     <div class="toolbar">
-        <button id="format-code">格式化代码</button>
+        <button id="format-code">格式代码</button>
         <button id="save-file">保存文件</button>
-        <button id="load-file">加载文件</button>
+        <button id="load-file">上传文件</button>
         <button id="switch-theme">切换主题</button>
-        <button id="open-terminal">打开终端</button>
+        <button id="open-about">关于</button>
     </div>
     <div class="container">
         <div class="editor">
@@ -146,8 +146,8 @@
         <div class="preview">
             <iframe id="preview-window" srcdoc=""></iframe>
         </div>
-        <div id="terminal" style="display: none; width: 100%; height: 20%; background-color: #000; color: #0F0; padding: 10px;">
-            <p>这是一个简单的终端模拟器。</p>
+        <div id="about" style="display: none; width: 100%; height: 20%; background-color: #000; color: #0F0; padding: 10px;">
+            <p>Hyper Studio - HendyTurtle - An online HTML editor based on CodeMirror.</p>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
@@ -174,8 +174,8 @@
             const saveButton = document.getElementById('save-file');
             const loadButton = document.getElementById('load-file');
             const themeButton = document.getElementById('switch-theme');
-            const terminalButton = document.getElementById('open-terminal');
-            const terminalDiv = document.getElementById('terminal');
+            const aboutButton = document.getElementById('open-about');
+            const aboutDiv = document.getElementById('about');
 
             // 初始化CodeMirror
             const codeMirror = CodeMirror.fromTextArea(editor, {
@@ -250,9 +250,9 @@
                 codeMirror.setOption('theme', isDarkTheme ? 'monokai' : 'default');
             });
 
-            // 打开终端
-            terminalButton.addEventListener('click', function() {
-                terminalDiv.style.display = terminalDiv.style.display === 'none' ? 'block' : 'none';
+            // 关于
+            aboutButton.addEventListener('click', function() {
+                aboutDiv.style.display = aboutDiv.style.display === 'none' ? 'block' : 'none';
             });
         });
 
