@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="UN SDG14 - 联合国可持续发展目标14：水下生物。了解和行动起来，保护我们的蓝色星球。">
+    <meta name="keywords" content="联合国, UN, SDG14, 可持续发展, 水下生物, 海洋保护, 环境保护">
+    <meta name="author" content="HendyTurtle, Daniel Xie">
+    <meta property="og:title" content="SDG14 - 水下生物">
+    <meta property="og:description" content="了解和行动起来，保护我们的蓝色星球。">
+    <title>SDG14 - 水下生物</title>
+    
+    <!-- 现代化依赖 -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0066cc;
+            --secondary: #00a6fb;
+            --accent: #7dcfff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 90vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.1' d='M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") center/cover;
+            opacity: 0.1;
+            animation: wave 15s infinite linear;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: 5px 5px 15px #d1d1d1,
+                       -5px -5px 15px #ffffff;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 8px 8px 20px #d1d1d1,
+                       -8px -8px 20px #ffffff;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: width 1.5s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, rgba(255,255,255,0.4), transparent);
+            animation: progress-shine 2s infinite;
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .floating-action-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+        }
+
+        .floating-action-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            background: var(--secondary);
+        }
+
+        @keyframes wave {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 70vh;
+            }
+            
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: white;
+                transition: right 0.3s ease;
+                z-index: 40;
+            }
+
+            .mobile-menu.active {
+                right: 0;
+            }
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .definition-card {
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .definition-card:hover {
+            background: var(--light);
+            transform: translateX(10px);
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .switchLanguage {
+            color:#000000;
+        }
+
+        .actnow {
+            color: #ffffff;
+        }
+
+        .actnow:hover {
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="glass-nav fixed w-full z-50 px-6 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                    <i class="fas fa-water text-black text-xl"></i>
+                </div>
+                <span class="text-xl font-semibold text-primary">SDG14</span>
+            </div>
+            
+            <div class="hidden md:flex space-x-6">
+                <a href="#goals" class="nav-link">目标</a>
+                <a href="#actions" class="nav-link">行动</a>
+                <a href="#data" class="nav-link">数据</a>
+                <a href="#definitions" class="nav-link">定义</a>
+                <button id="langSwitch" onclick="switchLanguage()" 
+                        class="switchLanguage px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition">
+                    中/En
+                </button>
+            </div>
+
+            <button class="md:hidden" id="menuButton">
+                <i class="fas fa-bars text-2xl text-primary"></i>
+            </button>
+        </div>
+
+        <div class="mobile-menu md:hidden" id="mobileMenu">
+            <div class="p-6">
+                <div class="flex justify-end">
+                    <button id="closeMenu">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div class="flex flex-col space-y-4 mt-8">
+                    <a href="#goals" class="nav-link">目标</a>
+                    <a href="#actions" class="nav-link">行动</a>
+                    <a href="#data" class="nav-link">数据</a>
+                    <a href="#definitions" class="nav-link">定义</a>
+                    <button onclick="switchLanguage()" 
+                            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition"> 
+                        中/En
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero-section flex items-center justify-center px-6 py-20">
+        <div class="container mx-auto text-center text-white relative z-10" data-aos="fade-up">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6" id="title">
+                守护海洋生命
+            </h1>
+            <p class="text-xl md:text-2xl max-w-2xl mx-auto opacity-90 mb-8" id="subtitle">
+                为了我们的蓝色星球，立即行动
+            </p>
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+                <a href="https://heygpt.hendyturtle.site/"
+                   class="bg-white text-primary px-8 py-3 rounded-full font-medium hover:bg-opacity-90 transition transform hover:scale-105">
+                    <p style="color: #000000;">Ask AI</p>
+                </a>
+                <a href="#actions" 
+                   class="actnow bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-medium hover:bg-white hover:text-primary transition transform hover:scale-105">
+                    Act Now</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要内容区 -->
+    <main class="container mx-auto px-6 py-16">
+        <!-- 目标卡片网格 -->
+        <section id="goals" class="mb-20">
+            <h2 class="text-3xl font-bold mb-10 text-center" data-aos="fade-up">Goals</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 目标卡片 1 -->
+                <div class="card p-6" data-aos="fade-up">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="target1">减少海洋污染</h3>
+                    </div>
+                    <p class="text-gray-600" id="target1Content">
+                        通过减少塑料和其他有害物质的排放，保护海洋生物和人类健康。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="35" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">35%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 2 -->
+                <div class="card p-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="target2">保护和恢复海洋生态系统</h3>
+                    </div>
+                    <p class="text-gray-600" id="target2Content">
+                        通过保护珊瑚礁、海草床和其他重要栖息地，维持生物多样性和生态服务。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="42" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">42%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 3 -->
+                <div class="card p-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-temperature-high"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="target3">减缓海洋酸化</h3>
+                    </div>
+                    <p class="text-gray-600" id="target3Content">
+                        通过减少二氧化碳排放，保护对酸化敏感的物种，如贝类和珊瑚。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="28" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">28%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 4 -->
+                <div class="card p-6" data-aos="fade-up">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="target4">推广可持续捕鱼</h3>
+                    </div>
+                    <p class="text-gray-600" id="target4Content">
+                        通过实施科学based的捕鱼实践和管理措施，确保鱼类资源的健康和生产能力。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="45" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">45%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 5 -->
+                <div class="card p-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="target5">保护沿海和海洋区域</h3>
+                    </div>
+                    <p class="text-gray-600" id="target5Content">
+                        通过建立海洋保护区和实施可持续开发计划，保持生态完整性和人类利益。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="38" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">38%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 6 -->
+                <div class="card p-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="target6">结束过度捕捞的补贴</h3>
+                    </div>
+                    <p class="text-gray-600" id="target6Content">
+                        通过取消对过度捕捞的补贴，促进海洋资源的可持续管理。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="32" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">32%</p>
+                    </div>
+                </div>
+                <!-- 目标卡片 7 -->
+                <div class="card p-6" data-aos="fade-up">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="target7">增加经济利益</h3>
+                    </div>
+                    <p class="text-gray-600" id="target7Content">
+                        通过支持沿海社区的经济发展，提高其生活质量。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="52" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">52%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 8 -->
+                <div class="card p-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="targetA">增加海洋科学知识</h3>
+                    </div>
+                    <p class="text-gray-600" id="targetAContent">
+                        通过加强海洋科学研究和技术创新，提高管理能力。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="48" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">48%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 9 -->
+                <div class="card p-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="targetB">支持小型渔业</h3>
+                    </div>
+                    <p class="text-gray-600" id="targetBContent">
+                        通过提供资金和技术支持，确保其可持续性和韧性。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="40" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">40%</p>
+                    </div>
+                </div>
+
+                <!-- 目标卡片 10 -->
+                <div class="card p-6" data-aos="fade-up">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h3 class="ml-4 text-xl font-semibold" id="targetC">实施国际海洋法</h3>
+                    </div>
+                    <p class="text-gray-600" id="targetCContent">
+                        通过遵守国际海洋法，确保海洋活动的公平、公正和可持续。
+                    </p>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar" data-progress="36" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">36%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 数据统计部分 -->
+        <section id="data" class="mb-20">
+            <h2 class="text-3xl font-bold mb-10 text-center" data-aos="fade-up">Statistics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="stat-card p-6" data-aos="zoom-in">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-temperature-high text-4xl text-primary"></i>
+                    </div>
+                    <h3 class="text-4xl font-bold text-primary text-center animate-number" data-number="5500000000">0</h3>
+                    <p class="mt-2 text-gray-600 text-center" id="dataContent1">海洋吸收的人类CO2排放量（吨）</p>
+                </div>
+
+                <div class="stat-card p-6" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-4xl text-primary"></i>
+                    </div>
+                    <h3 class="text-4xl font-bold text-primary text-center animate-number" data-number="58">0</h3>
+                    <p class="mt-2 text-gray-600 text-center" id="dataContent2">渔业部门全球雇佣人数（百万）</p>
+                </div>
+
+                <div class="stat-card p-6" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-trash text-4xl text-primary"></i>
+                    </div>
+                    <h3 class="text-4xl font-bold text-primary text-center animate-number" data-number="12">0</h3>
+                    <p class="mt-2 text-gray-600 text-center" id="dataContent3">每年流入海洋的塑料废物（百万吨）</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 行动建议部分 -->
+        <section id="actions" class="mb-20">
+            <h2 class="text-3xl font-bold mb-10 text-center" data-aos="fade-up">Do Your Part</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="action-card p-6 rounded-lg" data-aos="fade-up">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-recycle text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Reduce Plastic Waste</h3>
+                    <p>Use reusable containers and bags to reduce plastic waste.</p>
+                </div>
+
+                <div class="action-card p-6 rounded-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-hand-holding-water text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Save Water</h3>
+                    <p>Reduce water usage and use water-saving devices and technologies.</p>
+                </div>
+
+                <div class="action-card p-6 rounded-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-seedling text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Support Ocean Protection</h3>
+                    <p>Participate in beach cleanup activities and support ocean protection organizations.</p>
+                </div>
+            </div>
+        </section>
+        <!-- 定义说明部分 -->
+        <section id="definitions" class="mb-20">
+            <h2 class="text-3xl font-bold mb-10 text-center" data-aos="fade-up">Definitions</h2>
+            <div class="space-y-6">
+                <div class="definition-card p-6 bg-white rounded-lg" data-aos="fade-left">
+                    <h3 class="text-xl font-bold mb-2" id="definition1">海洋污染</h3>
+                    <p class="text-gray-600">用有害物质（如塑料和化学品）污染海洋，影响海洋生态系统和人类健康。</p>
+                    <p class="text-gray-600">Use of harmful substances (such as plastics and chemicals) to pollute the ocean, affecting the marine ecosystem and human health.</p>
+                </div>
+
+                <div class="definition-card p-6 bg-white rounded-lg" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="text-xl font-bold mb-2" id="definition2">海洋生态系统</h3>
+                    <p class="text-gray-600">海洋中共同生活的生物群落，包括各种生物及其环境之间的相互关系。</p>
+                    <p class="text-gray-600">A community of living organisms in the ocean, including various organisms and their interactions with their environment.</p>
+                </div>
+
+                <div class="definition-card p-6 bg-white rounded-lg" data-aos="fade-left" data-aos-delay="200">
+                    <h3 class="text-xl font-bold mb-2" id="definition3">海洋酸化</h3>
+                    <p class="text-gray-600">海洋因吸收过多二氧化碳而变得酸性，威胁海洋生物的生存。</p>
+                    <p class="text-gray-600">The ocean becomes acidic as it absorbs too much carbon dioxide, threatening the survival of marine life.</p>
+                </div>
+
+                <div class="definition-card p-6 bg-white rounded-lg" data-aos="fade-left" data-aos-delay="300">
+                    <h3 class="text-xl font-bold mb-2" id="definition4">可持续渔业</h3>
+                    <p class="text-gray-600">确保鱼类种群长期维持的捕鱼实践，平衡经济效益和生态保护。</p>
+                    <p class="text-gray-600">A fishing practice that ensures the long-term maintenance of fish populations, balancing economic benefits and ecological conservation.</p>
+                </div>
+
+                <div class="definition-card p-6 bg-white rounded-lg" data-aos="fade-left" data-aos-delay="400">
+                    <h3 class="text-xl font-bold mb-2" id="definition5">海洋保护区</h3>
+                    <p class="text-gray-600">为保护海洋生态系统而设立的特定区域，限制人类活动。</p>
+                    <p class="text-gray-600">Specific areas established to protect the marine ecosystem and limit human activities.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-white text-lg font-bold mb-4">SDG14</h4>
+                    <p class="text-gray-400">This is a school project by HendyTurtle and Daniel Xie, to educate the SDG 14. We are not responsible for the accuracy of the information provided.</p>
+                </div>
+                <div>
+                    <h4 class="text-white text-lg font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://heygpt.hendyturtle.site/" class="text-gray-400 hover:text-white transition">Ask AI</a></li>
+                        <li><a href="#goals" class="text-gray-400 hover:text-white transition">Goals</a></li>
+                        <li><a href="#actions" class="text-gray-400 hover:text-white transition">Take Action</a></li>
+                        <li><a href="#data" class="text-gray-400 hover:text-white transition">Stats</a></li>
+                        <li><a href="#definitions" class="text-gray-400 hover:text-white transition">Definitions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-lg font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400">Email: hi@hendyturtle.site</li>
+                        <li class="text-gray-400">By Hendy and Daniel (7H)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-lg font-bold mb-4">Support Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://hendyturtle.site/" class="social-link">
+                            <i class="fa-solid fa-globe"></i>
+                        </a>
+                        
+                        <a href="https://un.org/" class="social-link">
+                            <i class="fa-solid fa-heart"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 DINGDA HendyTurtle & Daniel Xie All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- 浮动操作按钮 -->
+    <button class="floating-action-button" id="scrollTop">
+        <i class="fas fa-arrow-up text-white"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // 初始化动画库
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100,
+            easing: 'ease-out-cubic'
+        });
+
+        // DOM 元素
+        const menuButton = document.getElementById('menuButton');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const scrollTopButton = document.getElementById('scrollTop');
+
+        // 移动端菜单控制
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // 滚动到顶部
+        scrollTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 滚动显示/隐藏返回顶部按钮
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopButton.style.opacity = '1';
+                scrollTopButton.style.pointerEvents = 'auto';
+            } else {
+                scrollTopButton.style.opacity = '0';
+                scrollTopButton.style.pointerEvents = 'none';
+            }
+        });
+
+        // 进度条动画
+        const progressBars = document.querySelectorAll('.progress-bar');
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const progressObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.getAttribute('data-progress') + '%';
+                }
+            });
+        }, observerOptions);
+
+        progressBars.forEach(bar => {
+            progressObserver.observe(bar);
+        });
+
+        // 数字动画
+        function animateNumbers() {
+            const numberElements = document.querySelectorAll('.animate-number');
+            
+            numberElements.forEach(element => {
+                const finalNumber = parseInt(element.getAttribute('data-number'));
+                let currentNumber = 0;
+                const duration = 2000;
+                const steps = 60;
+                const increment = finalNumber / (duration / 1000 * steps);
+                
+                const interval = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        currentNumber = finalNumber;
+                        clearInterval(interval);
+                    }
+                    element.textContent = Math.round(currentNumber);
+                }, 1000 / steps);
+            });
+        }
+
+        // 语言切换功能
+const translations = {
+    "title": {
+        "zh": "守护海洋生命",
+        "en": "Protect Marine Life"
+    },
+    "subtitle": {
+        "zh": "为了我们的蓝色星球，立即行动",
+        "en": "Act Now for Our Blue Planet"
+    },
+    "target1": {
+        "zh": "减少海洋污染",
+        "en": "Reduce Marine Pollution"
+    },
+    "target1Content": {
+        "zh": "通过减少塑料和其他有害物质的排放，保护海洋生物和人类健康。",
+        "en": "Protect marine life and human health by reducing the emission of plastics and other harmful substances."
+    },
+    "target2": {
+        "zh": "保护和恢复海洋生态系统",
+        "en": "Protect and Restore Marine Ecosystems"
+    },
+    "target2Content": {
+        "zh": "通过保护珊瑚礁、海草床和其他重要栖息地，维持生物多样性和生态服务。",
+        "en": "Maintain biodiversity and ecosystem services by protecting habitats such as coral reefs and seagrass beds."
+    },
+    "target3": {
+        "zh": "减缓海洋酸化",
+        "en": "Slow Down Ocean Acidification"
+    },
+    "target3Content": {
+        "zh": "通过减少二氧化碳排放，保护对酸化敏感的物种，如贝类和珊瑚。",
+        "en": "Protect species sensitive to acidification, such as shellfish and corals, by reducing CO2 emissions."
+    },
+    "target4": {
+        "zh": "推广可持续捕鱼",
+        "en": "Promote Sustainable Fishing"
+    },
+    "target4Content": {
+        "zh": "通过实施科学based的捕鱼实践和管理措施，确保鱼类资源的健康和生产能力。",
+        "en": "Ensure the health and productivity of fish resources through scientifically-based fishing practices and management measures."
+    },
+    "target5": {
+        "zh": "保护沿海和海洋区域",
+        "en": "Protect Coastal and Marine Areas"
+    },
+    "target5Content": {
+        "zh": "通过建立海洋保护区和实施可持续开发计划，保持生态完整性和人类利益。",
+        "en": "Maintain ecological integrity and human benefits by establishing marine protected areas and implementing sustainable development plans."
+    },
+    "target6": {
+        "zh": "结束过度捕捞的补贴",
+        "en": "End Subsidies for Overfishing"
+    },
+    "target6Content": {
+        "zh": "通过取消对过度捕捞的补贴，促进海洋资源的可持续管理。",
+        "en": "Promote sustainable management of marine resources by eliminating subsidies for overfishing."
+    },
+    "target7": {
+        "zh": "增加经济利益",
+        "en": "Increase Economic Benefits"
+    },
+    "target7Content": {
+        "zh": "通过支持沿海社区的经济发展，提高其生活质量。",
+        "en": "Improve the quality of life of coastal communities by supporting their economic development."
+    },
+    "targetA": {
+        "zh": "增加海洋科学知识",
+        "en": "Increase Ocean Science Knowledge"
+    },
+    "targetAContent": {
+        "zh": "通过加强海洋科学研究和技术创新，提高管理能力。",
+        "en": "Enhance management capabilities through strengthening marine scientific research and technological innovation."
+    },
+    "targetB": {
+        "zh": "支持小型渔业",
+        "en": "Support Small-Scale Fisheries"
+    },
+    "targetBContent": {
+        "zh": "通过提供资金和技术支持，确保其可持续性和韧性。",
+        "en": "Ensure their sustainability and resilience by providing financial and technical support."
+    },
+    "targetC": {
+        "zh": "实施国际海洋法",
+        "en": "Implement International Ocean Law"
+    },
+    "targetCContent": {
+        "zh": "通过遵守国际海洋法，确保海洋活动的公平、公正和可持续。",
+        "en": "Ensure equity, justice, and sustainability in marine activities by complying with international ocean law."
+    },
+    "dataContent1": {
+        "zh": "海洋吸收的人类CO2排放量（吨）",
+        "en": "Human CO2 emissions absorbed by the ocean (tons)"
+    },
+    "dataContent2": {
+        "zh": "渔业部门全球雇佣人数（百万）",
+        "en": "Global employment in the fishing sector (million)"
+    },
+    "dataContent3": {
+        "zh": "每年流入海洋的塑料废物（百万吨）",
+        "en": "Plastic waste entering the ocean annually (million tons)"
+    },
+    "definition1": {
+        "zh": "海洋污染",
+        "en": "Marine Pollution"
+    },
+    "definition2": {
+        "zh": "海洋生态系统",
+        "en": "Marine Ecosystem"
+    },
+    "definition3": {
+        "zh": "海洋酸化",
+        "en": "Ocean Acidification"
+    },
+    "definition4": {
+        "zh": "可持续渔业",
+        "en": "Sustainable Fishing"
+    },
+    "definition5": {
+        "zh": "海洋保护区",
+        "en": "Marine Protected Area"
+    },
+    "goalsTitle": {
+        "zh": "可持续发展目标",
+        "en": "Sustainability Development Goals"
+    }
+};
+
+
+        let currentLang = "zh";
+
+        function switchLanguage() {
+            currentLang = currentLang === "zh" ? "en" : "zh";
+            
+            Object.keys(translations).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.innerHTML = translations[key][currentLang];
+                    element.style.opacity = '0';
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                    }, 200);
+                }
+            });
+
+            const langButton = document.getElementById('langSwitch');
+            langButton.textContent = currentLang === "zh" ? "中/En" : "En/中";
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            animateNumbers();
+        });
+    </script>
+</body>
+</html>
+
