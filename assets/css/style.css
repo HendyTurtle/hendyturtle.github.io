@@ -761,7 +761,7 @@ main {
 
 
 /*-----------------------------------*\
-  #RESUME
+  #History
 \*-----------------------------------*/
 
 .article-title { margin-bottom: 30px; }
@@ -1485,7 +1485,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 
   /**
-   * #RESUME
+   * #History
    */
 
   .timeline-list { margin-left: 65px; }
@@ -1874,7 +1874,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 
   /**
-	 * RESUME
+	 * History
 	 */
 
   .timeline-text { max-width: 700px; }
