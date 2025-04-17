@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在线HTML编译器</title>
+    <title>HyperStudio | HendyTurtle | 在线HTML编译器</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,13 +18,19 @@
             color: #D4D4D4;
         }
 
+        .default-template {
+            display: none;
+        }
+
         .container {
             display: flex;
+            flex: 1;
             width: 80%;
-            height: 80%;
+            margin-top: 50px;
+            height: calc(100vh - 50px);
             border: 1px solid #333;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            flex-direction: row; /* 修改为行布局 */
+            flex-direction: row; 
             background-color: #252526;
             border-radius: 8px;
             overflow: hidden;
@@ -31,20 +38,21 @@
 
         .toolbar {
             display: flex;
-            justify-content: flex-start; /* 使内容靠左对齐 */
-            align-items: center; /* 垂直居中对齐 */
+            justify-content: flex-start; 
+            align-items: center; 
             padding: 10px 20px;
             background-color: #333;
             border-bottom: 1px solid #444;
-            width: 98%;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .toolbar span {
-            margin-left: auto; /* 将文本推到最右边 */
+            margin-left: auto; 
             color: #D4D4D4;
             font-weight: bold;
         }
@@ -72,11 +80,11 @@
 
         .editor {
             border-right: 1px solid #444;
-            width: 50%; /* 设置宽度为50% */
+            width: 50%;
         }
 
         .preview {
-            width: 50%; /* 设置宽度为50% */
+            width: 50%;
         }
 
         #html-code {
@@ -144,6 +152,130 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
 </head>
 <body>
+<template id="default-template">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello =)</title>
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --accent-color: #FFB300;
+            --bg-color: #181A1B;
+            --card-bg: #23272A;
+            --border-radius: 12px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.18);
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-color);
+            color: #F5F6FA;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 32px 24px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+        }
+        header p {
+            color: #B0BEC5;
+            font-size: 1.15rem;
+            margin: 0 0 1.5rem 0;
+        }
+        .cover-img {
+            width: 100%;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        article {
+            margin-bottom: 2.5rem;
+        }
+        article h2 {
+            color: var(--accent-color);
+            margin-top: 0;
+        }
+        article p {
+            line-height: 1.8;
+            font-size: 1.08rem;
+        }
+        .iframe-wrap {
+            margin: 2rem 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+        }
+        .iframe-wrap iframe {
+            width: 100%;
+            height: 320px;
+            border: none;
+            background: #111;
+        }
+        footer {
+            text-align: center;
+            color: #888;
+            font-size: 0.95rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #222;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px 4px;
+            }
+            .cover-img, .iframe-wrap iframe {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hello</h1>
+            <p>I don't know what to write here so I just wrote random stuff.</p>
+        </header>
+        <img class="cover-img" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="博客封面图">
+        <article>
+            <h2>Some Things To Write</h2>
+            <p>
+                Turtles are awesome! I have two turtles, one called "WhyWhy" and the other called "NewNew". They are two years old.
+            </p>
+        </article>
+        <div class="iframe-wrap">
+            <iframe src="https://ai.hendyturtle.site/chat" title="示例嵌入页面"></iframe>
+        </div>
+        <article>
+            <h2>Thank You</h2>
+            <p>
+                Mr Barsk is a good teacher.
+            </p>
+        </article>
+        <footer>
+            &copy; 2025 HendyTurtle | Powered by Hyper Studio Code (HendyTurtle)
+        </footer>
+    </div>
+</body>
+</html>
+</template>
     <div class="toolbar">
         <button id="format-code">格式代码</button>
         <button id="save-file">保存文件</button>
@@ -209,6 +341,26 @@
     
         // 初始化CodeMirror
         const codeMirror = CodeMirror.fromTextArea(editor, {
+            hintOptions: {
+                completeSingle: false,
+                hint: function(editor) {
+                    const cursor = editor.getCursor();
+                    const token = editor.getTokenAt(cursor);
+                    
+                    // 增强的自动补全逻辑
+                    const hints = CodeMirror.hint.html(editor) || {from: cursor, to: cursor, list: []};
+                    
+                    // 添加自定义补全项
+                    const customHints = [
+                        'div.container', 'header', 'main', 'article',
+                        'section', 'footer', 'nav', 'aside',
+                        'h1.title', 'p.description', 'button.btn'
+                    ];
+                    
+                    hints.list = hints.list.concat(customHints);
+                    return hints;
+                }
+            },
             mode: 'htmlmixed',
             lineNumbers: true,
             theme: 'monokai',
@@ -222,9 +374,12 @@
             styleActiveLine: true,
             highlightSelectionMatches: {showToken: /\w/},
             extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment"}, // 添加自动补全和注释快捷键
-            placeholder: "欢迎来到 Hyper Studio！\n你可以上传文件，或者在这里输入你的HTML代码...\n\n<!DOCTYPE html>\n<html>\n<head>\n<title>Welcome to Hyper Studio</title>\n</head>\n<body>\n\n<h1>Hello World</h1\n<p>Start typing, or upload an HTML file!</p>\n</body>\n</html>", // 添加占位符
+            placeholder: "欢迎来到 Hyper Studio！\n你可以上传文件，或者在这里输入你的HTML代码...\n\n<!DOCTYPE html>\n<html>\n<head>\n<title>Welcome to Hyper Studio</title>\n</head>\n<body>\n\n<h1>Hello World</h1\n<p>Start typing, or upload an HTML file!</p>\n</body>\n</html>", // 添加占位符
         });
     
+        const defaultTemplate = document.getElementById('default-template').innerHTML;
+        codeMirror.setValue(defaultTemplate);
+
         // 启用自动补全功能
         codeMirror.on('cursorActivity', function() {
             codeMirror.showHint({hint: CodeMirror.hint.html});
