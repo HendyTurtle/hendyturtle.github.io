@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乌龟翻译 - Turtle Translate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f4f8;
+            transition: background-color 0.3s ease;
+        }
+        .bbt {
+            background-color: #e6e6e6;
+            color: #000000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+        .bbt:hover {
+            background-color: #d1d1d1;
+        }
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
+        textarea::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        .icon-button svg, .icon-button i { vertical-align: middle; transition: transform 0.2s ease-out; }
+        .icon-button:hover svg, .icon-button:hover i { transform: scale(1.1); }
+        .icon-button .button-text { margin-left: 6px; font-size: 0.8rem; color: #4b5563; }
+
+        .placeholder-container { position: relative; }
+        .placeholder-content {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); text-align: center;
+            pointer-events: none; color: #9ca3af;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .placeholder-content .title { font-size: 1.5em; font-weight: 600; margin-bottom: 0.25rem; }
+        .placeholder-content .subtitle { font-size: 0.875em; }
+        textarea:focus + .placeholder-content,
+        textarea:not(:placeholder-shown) + .placeholder-content { opacity: 0; }
+
+        /* Modal and Wizard Styles */
+        .modal, .setup-wizard-step, #public-network-warning, #smart-lock-overlay {
+            display: none; position: fixed; z-index: 100;
+            left: 0; top: 0; width: 100%; height: 100%;
+            overflow: auto; background-color: rgba(0,0,0,0.6); /* Slightly darker backdrop */
+            align-items: center; justify-content: center;
+            padding: 1rem;
+        }
+        .modal-content, .wizard-content-panel, .warning-content-panel, .lock-content-panel {
+            background-color: #fff; margin: auto; padding: 25px;
+            border-radius: 10px; width: 90%; max-width: 550px; /* Slightly wider for wizard */
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: 
+            scale(0.95); opacity: 0;
+        }
+        .lock-content-panel {
+            width: 90%; max-width: none; /* Slightly wider for wizard */
+            height: 90%;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: scale(0.95); opacity: 0;
+            /* 内容在上下垂直方面居中 */
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+        .modal.active .modal-content, 
+        .setup-wizard-step.active .wizard-content-panel,
+        #public-network-warning.active .warning-content-panel,
+        #smart-lock-overlay.active .lock-content-panel {
+            transform: scale(1); opacity: 1;
+        }
+
+        .modal-close-button {
+            color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer;
+            line-height: 1; transition: color 0.2s ease;
+        }
+        .modal-close-button:hover, .modal-close-button:focus { color: #333; }
+
+        /* Key strength indicator */
+        #keyStrengthIndicator, #wizardKeyStrengthIndicator { font-size: 0.9rem; margin-top: 5px; margin-bottom: 15px; text-align: left; transition: color 0.3s ease; font-weight: 500;}
+        .strength-very-weak { color: #ef4444; } /* red-500 */
+        .strength-weak { color: #f97316; } /* orange-500 */
+        .strength-fair { color: #eab308; } /* yellow-500 */
+        .strength-strong { color: #22c55e; } /* green-500 */
+        .strength-very-strong { color: #16a34a; } /* green-600 */
+        .strength-suggestion {font-size: 0.75rem; color: #6b7280; margin-top: -10px; margin-bottom: 10px;}
+
+        #oneTimeViewModal { background-color: rgba(0,0,0,0.85); }
+        #oneTimeViewContent {
+            color: #e5e7eb; background-color: #1f2937;
+            padding: 30px; border-radius: 8px; max-width: 80%; max-height: 80vh;
+            overflow-y: auto; white-space: pre-wrap; word-break: break-all;
+            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+            font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+        }
+        
+        #fixed-header-buttons {
+            position: fixed; top: 10px; right: 10px; z-index: 50; /* Below modals/overlays */
+            display: flex; gap: 8px;
+        }
+        .btn-save-feedback { transition: all 0.3s ease-in-out !important; }
+
+        /* Wizard navigation */
+        .wizard-nav { display: flex; justify-content: space-between; margin-top: 20px; }
+        .wizard-btn {
+            padding: 10px 20px; border-radius: 6px; font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        .wizard-btn:hover { transform: translateY(-1px); }
+        .wizard-btn-next { background-color: #22c55e; color: white; } /* green-500 */
+        .wizard-btn-next:hover { background-color: #16a34a; } /* green-600 */
+        .wizard-btn-prev { background-color: #6b7280; color: white; } /* gray-500 */
+        .wizard-btn-prev:hover { background-color: #4b5563; } /* gray-600 */
+        .wizard-btn:disabled { background-color: #d1d5db; cursor: not-allowed; } /* gray-300 */
+
+        /* Smart Lock Overlay */
+        #smart-lock-overlay { z-index: 200; } /* Highest */
+        .lock-content-panel { text-align: center; }
+
+        /* Hide app container initially */
+        #app-container { display: none; padding-top: 70px; /* Adjusted for fixed header */}
+
+        /* Toggle Switch for Smart Lock */
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px;
+            left: 4px; bottom: 4px; background-color: white;
+            transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #22c55e; } /* green-500 */
+        input:focus + .slider { box-shadow: 0 0 1px #22c55e; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-2 sm:p-4">
+
+    <div id="public-network-warning" class="items-center justify-center">
+        <div class="warning-content-panel">
+            <h2 class="text-2xl font-semibold mb-4 text-slate-700">🛡️ 安全提示：请在本地环境使用</h2>
+            <p class="text-slate-600 mb-3">为了保护您的数据安全，乌龟翻译设计为在您的本地计算机上运行。</p>
+            <p class="text-slate-600 mb-4">检测到您当前可能正在通过公共网络访问。请将此页面完整保存到您的电脑上，然后从本地文件打开它。</p>
+            <div class="bg-slate-100 p-3 rounded-md mb-4 text-sm">
+                <strong id="browserSaveInstructionTitle">保存教程:</strong>
+                <p id="browserSaveInstruction" class="text-slate-700"></p>
+                <p class="mt-2">保存后，在您的文件浏览器中找到该 `.html` 文件并双击打开即可。</p>
+            </div>
+            <button id="forceContinueBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-150">我了解风险，仍要继续 (不推荐)</button>
+        </div>
+    </div>
+
+    <div id="setup-wizard">
+        <div id="wizard-step-1" class="setup-wizard-step">
+            <div class="wizard-content-panel">
+                <h2 class="text-3xl font-bold mb-3 text-slate-800 text-center">欢迎使用乌龟翻译 <span class="text-green-600">🐢</span></h2>
+                <p class="text-slate-600 mb-6 text-center text-lg">使用乌龟翻译安全地翻译乌龟语。</p>
+                <div class="wizard-nav">
+                    <button class="wizard-btn wizard-btn-prev" style="visibility: hidden;">上一步</button>
+                    <button id="wizard-step1-next" class="wizard-btn wizard-btn-next">开始设置</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="wizard-step-2" class="setup-wizard-step">
+            <div class="wizard-content-panel">
+                <h2 class="text-2xl font-semibold mb-4 text-slate-700">🔑 设置您的主密钥</h2>
+                <p class="text-slate-600 mb-3">此密钥用于加密和解密您的文本。请务必牢记，并选择一个强密码。它将仅保存在您的浏览器本地存储中。</p>
+                <label for="wizardSecretKey" class="block text-sm font-medium text-slate-700 mb-1">主密钥:</label>
+                <input type="password" id="wizardSecretKey" autocomplete="new-password" class="p-2.5 border border-slate-300 rounded-lg w-full shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-150">
+                <div id="wizardKeyStrengthIndicator">强度: N/A</div>
+                <div id="wizardKeyStrengthSuggestion" class="strength-suggestion">建议包含大小写字母、数字和特殊符号，长度至少12位。</div>
+                <div class="wizard-nav">
+                    <button id="wizard-step2-prev" class="wizard-btn wizard-btn-prev">上一步</button>
+                    <button id="wizard-step2-next" class="wizard-btn wizard-btn-next" disabled>下一步</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="wizard-step-3" class="setup-wizard-step">
+            <div class="wizard-content-panel">
+                <h2 class="text-2xl font-semibold mb-4 text-slate-700">🛡️ 智能防窥保护</h2>
+                <p class="text-slate-600 mb-3">在公共场所使用时，担心旁人看到屏幕内容？启用智能防窥后，只需按下 <code class="bg-slate-200 px-1 rounded">Tab</code> 键即可立即锁定屏幕。</p>
+                <p class="text-slate-600 mb-4">再次按下 <code class="bg-slate-200 px-1 rounded">Tab</code> 或 <code class="bg-slate-200 px-1 rounded">Space</code> 键，或点击屏幕上的按钮即可解锁。</p>
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-md">
+                    <label for="enableSmartLock" class="text-slate-700 font-medium">启用智能防窥功能:</label>
+                    <label class="switch">
+                        <input type="checkbox" id="enableSmartLock" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="wizard-nav">
+                    <button id="wizard-step3-prev" class="wizard-btn wizard-btn-prev">上一步</button>
+                    <button id="wizard-step3-next" class="wizard-btn wizard-btn-next">下一步</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="wizard-step-4" class="setup-wizard-step">
+            <div class="wizard-content-panel">
+                <h2 class="text-2xl font-semibold mb-4 text-slate-700">🔒 使用环境确认</h2>
+                <p class="text-slate-600 mb-3">为了您的数据安全，请确认以下事项：</p>
+                <ul class="list-disc list-inside text-slate-600 mb-4 space-y-1">
+                    <li>您当前使用的是<strong>个人电脑/设备</strong>。</li>
+                    <li>此浏览器为<strong>您个人专用</strong>，非公用或共享。</li>
+                    <li>您理解将密钥保存在浏览器的风险，并已采取适当措施保护设备。</li>
+                </ul>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="confirmPrivateUse" class="form-checkbox h-5 w-5 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                    <span class="text-slate-700">我已阅读并确认以上所有条款。</span>
+                </label>
+                <div class="wizard-nav">
+                    <button id="wizard-step4-prev" class="wizard-btn wizard-btn-prev">上一步</button>
+                    <button id="wizard-step4-next" class="wizard-btn wizard-btn-next" disabled>下一步</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="wizard-step-5" class="setup-wizard-step">
+            <div class="wizard-content-panel text-center">
+                <div class="text-5xl mb-4">🎉</div>
+                <h2 class="text-2xl font-semibold mb-3 text-slate-700">设置完成！</h2>
+                <p class="text-slate-600 mb-6">您已成功配置乌龟翻译。现在可以开始安全地翻译乌龟语文本了。</p>
+                <button id="startUsingAppBtn" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-150 text-lg">
+                    <i class="fas fa-rocket mr-2"></i>开始使用
+                </button>
+                 <div class="wizard-nav justify-center mt-6">
+                    <button id="wizard-step5-prev" class="wizard-btn wizard-btn-prev">返回修改设置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="w-full max-w-5xl">
+        <div id="fixed-header-buttons">
+            <button id="settingsBtn" title="设置" class="p-3 bg-white text-slate-600 hover:text-green-600 hover:bg-slate-100 rounded-full shadow-md transition-all duration-200 icon-button">
+                <i class="fas fa-cog fa-lg"></i>
+            </button>
+        </div>
+
+        <header class="text-center mb-6 sm:mb-8">
+            <h1 class="text-4xl sm:text-5xl font-bold text-slate-700">乌龟翻译</h1>
+            <p class="text-sm text-slate-500">Turtle Translate</p>
+        </header>
+
+        <main class="w-full bg-white shadow-2xl rounded-xl p-4 sm:p-8 relative">
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+                
+                <div class="flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-2">
+                        <span id="sourceLangLabel" class="text-slate-700 font-semibold text-base sm:text-lg transition-all duration-300">✍️ 文本</span>
+                        <div class="flex items-center space-x-1 sm:space-x-2">
+                            <button id="uploadBtn" title="📤 上传文本文件 (.txt)" class="p-1.5 sm:p-2 text-slate-500 hover:text-green-600 hover:bg-slate-100 rounded-md transition-colors duration-150 icon-button">
+                                <i class="fas fa-file-alt"></i> <span class="button-text">上传</span>
+                            </button>
+                            <button id="clearSourceBtn" title="🗑️ 清空原文" class="p-1.5 sm:p-2 text-slate-500 hover:text-red-600 hover:bg-slate-100 rounded-md transition-colors duration-150 icon-button">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="placeholder-container relative w-full h-full">
+                        <textarea id="sourceText" rows="12" class="p-3 border border-slate-300 rounded-lg w-full h-full resize-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-150 text-sm sm:text-base bg-slate-50" placeholder=" "></textarea>
+                        <div id="sourcePlaceholder" class="placeholder-content">
+                            <div class="title">✍️ 输入以翻译.</div>
+                            <div class="subtitle">在此键入、粘贴或拖放文本文件。</div>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex justify-between items-center text-xs text-slate-500">
+                        <button id="copySourceBtn" title="复制原文" class="p-1.5 sm:p-2 text-slate-500 hover:text-green-600 hover:bg-slate-100 rounded-md transition-colors duration-150 icon-button">
+                            <i class="fas fa-copy"></i> <span class="button-text">复制</span>
+                        </button>
+                        <div id="sourceCounts" class="text-right">字符: 0, 词语: 0</div>
+                    </div>
+                    <div class="mt-2 flex space-x-2">
+                        <button id="encryptFileBtn" class="flex-1 p-2 text-sm text-white rounded-md transition-colors duration-150 icon-button bbt" disabled>
+                            <i class="fas fa-file-shield"></i> <span class="button-text">加密文件</span>
+                        </button>
+                        <input type="file" id="encryptFileInput" class="hidden" accept=".txt,.text,.md">
+                        <button id="decryptFileBtn" class="flex-1 p-2 text-sm text-white rounded-md transition-colors duration-150 icon-button bbt" disabled>
+                            <i class="fas fa-file-invoice"></i> <span class="button-text">解密文件</span>
+                        </button>
+                        <input type="file" id="decryptFileInput" class="hidden" accept=".turtlec">
+                    </div>
+                </div>
+
+                <div class="flex justify-center items-center mt-10 md:mt-0">
+                    <button id="swapButton" title="🔄 交换语言" class="p-3 sm:p-4 rounded-full hover:bg-slate-200 text-green-600 transition-all duration-200 ease-in-out transform hover:scale-110 icon-button">
+                        <i class="fas fa-exchange-alt fa-lg"></i>
+                    </button>
+                </div>
+
+                <div class="flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-2">
+                        <span id="targetLangLabel" class="text-slate-700 font-semibold text-base sm:text-lg transition-all duration-300">🐢 龟语编码</span>
+                         <div class="flex items-center space-x-1 sm:space-x-2">
+                            <button id="oneTimeViewBtn" title="👁️ 阅后即焚" class="p-1.5 sm:p-2 text-slate-500 hover:text-orange-500 hover:bg-slate-100 rounded-md transition-colors duration-150 icon-button hidden">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                            <button id="speakTargetBtn" title="🔊 朗读译文" class="p-1.5 sm:p-2 text-slate-500 hover:text-green-600 hover:bg-slate-100 rounded-md transition-colors duration-150 icon-button hidden">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <button id="saveBtn" title="💾 保存译文" class="p-1.5 sm:p-2 text-slate-500 hover:text-green-600 hover:bg-slate-100 rounded-md transition-colors duration-150 icon-button">
+                                <i class="fas fa-save"></i> <span class="button-text">保存</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="placeholder-container relative w-full h-full">
+                        <textarea id="targetText" rows="12" class="p-3 border border-slate-300 rounded-lg w-full h-full resize-none bg-slate-100 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-150 text-sm sm:text-base" readonly placeholder=" "></textarea>
+                        <div id="targetPlaceholder" class="placeholder-content">
+                            <div class="title">🔒 译文将显示于此.</div>
+                            <div class="subtitle">结果会自动出现。</div>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex justify-between items-center text-xs text-slate-500">
+                         <button id="copyTargetBtn" title="复制译文" class="p-1.5 sm:p-2 text-slate-500 hover:text-green-600 hover:bg-slate-100 rounded-md transition-colors duration-150 icon-button">
+                           <i class="fas fa-copy"></i> <span class="button-text">复制</span>
+                        </button>
+                        <div id="targetCounts" class="text-right">字符: 0, 词语: 0</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <input type="file" id="fileInput" class="hidden" accept=".txt,.text,.md"> 
+    </div>
+
+
+    <div id="settingsModal" class="modal">
+         <div class="modal-content">
+            <span id="closeSettingsModalBtn" class="modal-close-button">&times;</span>
+            <h2 class="text-2xl font-semibold mb-4 text-slate-700">⚙️ 应用设置</h2>
+            
+            <div class="mb-4">
+                <label for="settingsSecretKey" class="block text-sm font-medium text-slate-700 mb-1">主密钥 (Secret Key):</label>
+                <input type="password" id="settingsSecretKey" class="p-2.5 border border-slate-300 rounded-lg w-full shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-150" placeholder="输入新的密钥以更改">
+                <div id="keyStrengthIndicator">强度: N/A</div>
+                 <p class="text-xs text-slate-500 mt-1">更改后，旧密钥加密的内容将无法用新密钥解密。</p>
+            </div>
+
+            <div class="mb-6">
+                <div class="flex items-center justify-between">
+                    <label for="settingsEnableSmartLock" class="text-sm font-medium text-slate-700">启用智能防窥 (<code class="bg-slate-200 px-1 rounded text-xs">Tab</code> 键锁定):</label>
+                    <label class="switch">
+                        <input type="checkbox" id="settingsEnableSmartLock">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <button id="saveSettingsKeyBtn" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-150 btn-save-feedback">保存设置</button>
+        </div>
+    </div>
+
+    <div id="smart-lock-overlay" class="items-center justify-center">
+        <div class="lock-content-panel">
+            <div class="text-6xl mb-4">🤫</div>
+            <h2 class="text-3xl font-bold mb-3 text-slate-800">等等，你现在安全吗？</h2>
+            <p class="text-slate-600 mb-6 text-lg">屏幕已临时锁定以保护您的隐私。</p>
+            <button id="unlockSmartLockBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg text-lg transition-colors duration-150">
+                <i class="fas fa-unlock-alt mr-2"></i> 继续使用
+            </button>
+            <p class="text-sm text-slate-500 mt-4">或按 <code class="bg-slate-200 px-1 rounded">Space</code> / <code class="bg-slate-200 px-1 rounded">Tab</code> 键解锁</p>
+        </div>
+    </div>
+
+    <div id="oneTimeViewModal" class="modal">
+        <div id="oneTimeViewContentContainer" class="modal-content p-0 bg-transparent shadow-none w-auto"> <pre id="oneTimeViewContent" class="text-sm sm:text-base"></pre> </div>
+    </div>
+    
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 text-white py-2.5 px-5 rounded-lg shadow-xl hidden opacity-0 transition-all duration-300 z-[250] text-sm sm:text-base">
+        通知消息
+    </div>
+
+    <script>
+    const appContainerEl = document.getElementById('app-container');
+    const sourceTextEl = document.getElementById('sourceText');
+    const targetTextEl = document.getElementById('targetText');
+    const sourceLangLabelEl = document.getElementById('sourceLangLabel');
+    const targetLangLabelEl = document.getElementById('targetLangLabel');
+    const sourcePlaceholderEl = document.getElementById('sourcePlaceholder');
+    const targetPlaceholderEl = document.getElementById('targetPlaceholder');
+    const swapButtonEl = document.getElementById('swapButton');
+    const copySourceBtn = document.getElementById('copySourceBtn');
+    const copyTargetBtn = document.getElementById('copyTargetBtn');
+    const clearSourceBtn = document.getElementById('clearSourceBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInputEl = document.getElementById('fileInput');
+    const saveBtn = document.getElementById('saveBtn');
+    const toastEl = document.getElementById('toast');
+    const sourceCountsEl = document.getElementById('sourceCounts');
+    const targetCountsEl = document.getElementById('targetCounts');
+    const speakTargetBtn = document.getElementById('speakTargetBtn');
+    const oneTimeViewBtn = document.getElementById('oneTimeViewBtn');
+    const oneTimeViewModalEl = document.getElementById('oneTimeViewModal');
+    const oneTimeViewContentEl = document.getElementById('oneTimeViewContent');
+    const encryptFileBtn = document.getElementById('encryptFileBtn');
+    const encryptFileInputEl = document.getElementById('encryptFileInput');
+    const decryptFileBtn = document.getElementById('decryptFileBtn');
+    const decryptFileInputEl = document.getElementById('decryptFileInput');
+
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsModalEl = document.getElementById('settingsModal');
+    const settingsSecretKeyEl = document.getElementById('settingsSecretKey');
+    const saveSettingsKeyBtn = document.getElementById('saveSettingsKeyBtn');
+    const closeSettingsModalBtn = document.getElementById('closeSettingsModalBtn');
+    const keyStrengthIndicatorEl = document.getElementById('keyStrengthIndicator');
+    const settingsEnableSmartLockEl = document.getElementById('settingsEnableSmartLock');
+
+    const publicNetworkWarningEl = document.getElementById('public-network-warning');
+    const browserSaveInstructionTitleEl = document.getElementById('browserSaveInstructionTitle');
+    const browserSaveInstructionEl = document.getElementById('browserSaveInstruction');
+    const forceContinueBtn = document.getElementById('forceContinueBtn');
+
+    const setupWizardEl = document.getElementById('setup-wizard');
+    const wizardSteps = [
+        document.getElementById('wizard-step-1'),
+        document.getElementById('wizard-step-2'),
+        document.getElementById('wizard-step-3'),
+        document.getElementById('wizard-step-4'),
+        document.getElementById('wizard-step-5'),
+    ];
+    const wizardStep1NextBtn = document.getElementById('wizard-step1-next');
+    const wizardStep2PrevBtn = document.getElementById('wizard-step2-prev');
+    const wizardStep2NextBtn = document.getElementById('wizard-step2-next');
+    const wizardSecretKeyEl = document.getElementById('wizardSecretKey');
+    const wizardKeyStrengthIndicatorEl = document.getElementById('wizardKeyStrengthIndicator');
+    const wizardKeyStrengthSuggestionEl = document.getElementById('wizardKeyStrengthSuggestion');
+    const wizardStep3PrevBtn = document.getElementById('wizard-step3-prev');
+    const wizardStep3NextBtn = document.getElementById('wizard-step3-next');
+    const enableSmartLockEl = document.getElementById('enableSmartLock');
+    const wizardStep4PrevBtn = document.getElementById('wizard-step4-prev');
+    const wizardStep4NextBtn = document.getElementById('wizard-step4-next');
+    const confirmPrivateUseEl = document.getElementById('confirmPrivateUse');
+    const wizardStep5PrevBtn = document.getElementById('wizard-step5-prev');
+    const startUsingAppBtn = document.getElementById('startUsingAppBtn');
+
+    // Smart Lock
+    const smartLockOverlayEl = document.getElementById('smart-lock-overlay');
+    const unlockSmartLockBtn = document.getElementById('unlockSmartLockBtn');
+    
+    // --- State Variables ---
+    let currentDirection = "TextToCode"; 
+    let secretKey = "";
+    let smartLockEnabled = true; // Default for wizard, will be saved
+    let currentWizardStep = 0;
+    let appInitialized = false;
+
+    const LOCAL_STORAGE_KEY_NAME = "turtleTranslatorSecretKey"; 
+    const LOCAL_STORAGE_SETUP_COMPLETE = "turtleTranslatorSetupComplete";
+    const LOCAL_STORAGE_SMART_LOCK_ENABLED = "turtleTranslatorSmartLockEnabled";
+
+    // --- Utility Functions ---
+    function showToast(message, type = "success", duration = 3000) {
+        toastEl.textContent = message;
+        toastEl.className = 'fixed bottom-5 right-5 text-white py-2.5 px-5 rounded-lg shadow-xl opacity-0 transition-all duration-300 z-[250] text-sm sm:text-base'; // Reset classes
+        if (type === "error") toastEl.classList.add('bg-red-600');
+        else if (type === "warning") {toastEl.classList.add('bg-yellow-500'); toastEl.classList.add('text-black');}
+        else if (type === "info") toastEl.classList.add('bg-blue-500');
+        else toastEl.classList.add('bg-green-600'); // success
+        
+        toastEl.classList.remove('hidden', 'opacity-0');
+        toastEl.classList.add('opacity-100');
+        setTimeout(() => {
+            toastEl.classList.remove('opacity-100');
+            // toastEl.classList.add('opacity-0'); // This causes flash, directly hide after transition
+            setTimeout(() => toastEl.classList.add('hidden'), 300); // Hide after fade out
+        }, duration);
+    }
+
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+    
+    function openModal(modalEl) {
+        if (!modalEl) return;
+        modalEl.style.display = "flex";
+        setTimeout(() => modalEl.classList.add('active'), 10);
+    }
+
+    function closeModal(modalEl) {
+        if (!modalEl) return;
+        modalEl.classList.remove('active');
+        setTimeout(() => modalEl.style.display = "none", 300);
+    }
+
+    // --- Encoding/Decoding Logic (No Prefix - same as original) ---
+    function strToUtf8Bytes(str) {
+        try { return new TextEncoder().encode(str); } 
+        catch (e) { throw new Error("无法将文本编码为 UTF-8。"); }
+    }
+    function utf8BytesToStr(bytes) {
+        try { return new TextDecoder("utf-8", { fatal: true }).decode(bytes); } 
+        catch (e) { throw new Error("无法从 UTF-8 解码字节。数据可能已损坏或密钥不正确。"); }
+    }
+    function bytesToBase64(bytes) {
+        try {
+            let binary = '';
+            bytes.forEach(byte => binary += String.fromCharCode(byte));
+            return btoa(binary);
+        } catch (e) { throw new Error("无法将字节编码为 Base64。"); }
+    }
+    function base64ToBytes(base64) {
+        try {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        } catch (e) { throw new Error("无法解码 Base64 字符串。它可能无效或已损坏。"); }
+    }
+    function turtleEncode(plainText, key) {
+        if (!key) return { success: false, message: "编码需要密钥。" };
+        if (!plainText && typeof plainText !== 'string') return { success: false, message: "输入无效。" };
+        if (plainText === "") return { success: true, data: "" };
+        try {
+            const textBytes = strToUtf8Bytes(plainText);
+            const keyBytes = strToUtf8Bytes(key);
+            if (keyBytes.length === 0) return { success: false, message: "密钥不能为空。" };
+            const outputBytes = new Uint8Array(textBytes.length);
+            for (let i = 0; i < textBytes.length; i++) {
+                outputBytes[i] = textBytes[i] ^ keyBytes[i % keyBytes.length];
+            }
+            return { success: true, data: bytesToBase64(outputBytes) };
+        } catch (e) { return { success: false, message: e.message || "编码过程中发生意外错误。" }; }
+    }
+    function turtleDecode(codedText, key) {
+        if (!key) return { success: false, message: "解码需要密钥。" };
+        if (!codedText && typeof codedText !== 'string') return { success: false, message: "输入无效。" };
+        if (codedText === "") return { success: true, data: "" };
+        try {
+            const decodedBytesXORed = base64ToBytes(codedText);
+            const keyBytes = strToUtf8Bytes(key);
+            if (keyBytes.length === 0) return { success: false, message: "密钥不能为空。" };
+            const outputBytes = new Uint8Array(decodedBytesXORed.length);
+            for (let i = 0; i < decodedBytesXORed.length; i++) {
+                outputBytes[i] = decodedBytesXORed[i] ^ keyBytes[i % keyBytes.length];
+            }
+            const plainText = utf8BytesToStr(outputBytes);
+            return { success: true, data: plainText };
+        } catch (e) { return { success: false, message: e.message || "解码失败。无效数据或密钥不正确。" }; }
+    }
+    function isPotentiallyBase64(str) {
+        if (!str || typeof str !== 'string') return false;
+        // Relaxed check: if it's empty or doesn't contain non-base64url characters (excluding padding)
+        // and its length is plausible for base64, it's potentially base64.
+        // True Base64 has specific length requirements (multiple of 4 after padding removal)
+        // but for detection, we can be a bit looser.
+        if (str.length === 0) return false; // Empty string is not typically what we're looking for as "coded"
+        return /^[A-Za-z0-9+/]*={0,2}$/.test(str) && str.length > 5 ; // At least some length, and valid chars
+    }
+
+    // --- Key Strength Indicator ---
+    function getKeyStrength(password) {
+        let score = 0;
+        if (!password) return 0;
+        // Increase score for length
+        if (password.length >= 8) score++;
+        if (password.length >= 12) score += 2; // Significantly better
+        if (password.length >= 16) score++; 
+        // Increase score for character variety
+        if (/[A-Z]/.test(password)) score++; 
+        if (/[a-z]/.test(password)) score++; 
+        if (/[0-9]/.test(password)) score++; 
+        if (/[^A-Za-z0-9]/.test(password)) score+=2; // Symbols are good
+        return score;
+    }
+
+    function updateKeyStrengthVisuals(password, indicatorEl, suggestionEl = null) {
+        const score = getKeyStrength(password);
+        let strengthText = "强度: ";
+        let strengthClass = "";
+        let suggestionText = "建议包含大小写字母、数字和特殊符号，长度至少12位。";
+
+        if (!password) {
+            strengthText += "N/A";
+            strengthClass = "";
+        } else if (score <= 2) { // Very Weak
+            strengthText += "非常弱"; strengthClass = "strength-very-weak";
+            suggestionText = "太短或太简单。请增加长度并混合字符类型。";
+        } else if (score <= 4) { // Weak
+            strengthText += "弱"; strengthClass = "strength-weak";
+            suggestionText = "还不够强。尝试更长，或添加特殊符号。";
+        } else if (score <= 6) { // Fair
+            strengthText += "一般"; strengthClass = "strength-fair";
+            suggestionText = "还不错，但可以更强。考虑增加长度或符号。";
+        } else if (score <= 8) { // Strong
+            strengthText += "强"; strengthClass = "strength-strong";
+            suggestionText = "这是一个不错的密码！";
+        } else { // Very Strong
+            strengthText += "非常强"; strengthClass = "strength-very-strong";
+            suggestionText = "非常棒的密码！";
+        }
+        indicatorEl.textContent = strengthText;
+        indicatorEl.className = ''; // Clear previous classes
+        if (strengthClass) indicatorEl.classList.add(strengthClass);
+
+        if (suggestionEl) {
+            suggestionEl.textContent = suggestionText;
+            suggestionEl.className = 'strength-suggestion '; // Reset then add
+            if (score >= 7) suggestionEl.classList.add('text-green-600');
+            else if (score >= 5) suggestionEl.classList.add('text-yellow-600');
+            else suggestionEl.classList.add('text-red-500');
+        }
+        return score; // Return score for validation
+    }
+    
+    // --- Environment Check ---
+    function checkEnvironment() {
+        const protocol = window.location.protocol;
+        const hostname = window.location.hostname;
+        const isLocalFile = protocol === "file:";
+        const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+        // Basic private IP check (extend if needed)
+        const isPrivateNetwork = /^192\.168\.|^10\.|^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname);
+
+        if (isLocalFile || isLocalhost || isPrivateNetwork) {
+            closeModal(publicNetworkWarningEl); // Hide warning if it was somehow shown
+            initializeSetupOrApp();
+            return true;
+        } else {
+            // Public network detected
+            const ua = navigator.userAgent;
+            let instructions = "";
+            if (ua.includes("Firefox")) {
+                instructions = "在 Firefox 中，按 Ctrl+S (Windows/Linux) 或 Cmd+S (Mac)，选择“网页，全部”或“Web Page, Complete”，然后保存。";
+            } else if (ua.includes("Chrome") || ua.includes("Edge")) {
+                instructions = "在 Chrome/Edge 中，按 Ctrl+S (Windows/Linux) 或 Cmd+S (Mac)，选择“网页，全部”或“Web Page, Complete”，然后保存。";
+            } else if (ua.includes("Safari")) {
+                instructions = "在 Safari 中，选择 文件 > 存储为... (File > Save As...)，确保格式为“网页归档(Web Archive)”或“页面源码(Page Source)”。";
+            } else {
+                instructions = "通常，您可以通过在页面上右键单击并选择“另存为...”或“Save Page As...”来保存页面，确保选择“网页，全部”或“Web Page, Complete”选项（如果可用）。";
+            }
+            browserSaveInstructionEl.innerHTML = instructions;
+            browserSaveInstructionTitleEl.textContent = `保存教程 (${ua.includes("Firefox") ? "Firefox" : ua.includes("Chrome") ? "Chrome" : ua.includes("Edge") ? "Edge" : ua.includes("Safari") ? "Safari" : "您的浏览器"}):`;
+            
+            setupWizardEl.style.display = 'none'; // Hide wizard
+            appContainerEl.style.display = 'none'; // Hide app
+            openModal(publicNetworkWarningEl);
+            return false;
+        }
+    }
+
+    forceContinueBtn.addEventListener('click', () => {
+        showToast("不推荐在公网环境使用，请注意安全风险。", "warning", 5000);
+        closeModal(publicNetworkWarningEl);
+        initializeSetupOrApp();
+    });
+    
+    // --- Setup Wizard Logic ---
+    function showWizardStep(stepIndex) {
+        wizardSteps.forEach((step, index) => {
+            if (index === stepIndex) {
+                step.style.display = "flex"; // Use flex for centering
+                setTimeout(() => step.classList.add('active'), 10);
+                currentWizardStep = index;
+            } else {
+                step.classList.remove('active');
+                setTimeout(() => step.style.display = "none", 300);
+            }
+        });
+    }
+
+    function initializeSetupOrApp() {
+        const setupComplete = localStorage.getItem(LOCAL_STORAGE_SETUP_COMPLETE);
+        if (setupComplete === "true") {
+            loadAppSettings(); // Load key and smart lock settings
+            startApp();
+        } else {
+            setupWizardEl.style.display = "block"; // Show the parent container for steps
+            showWizardStep(0);
+        }
+    }
+
+    wizardStep1NextBtn.addEventListener('click', () => showWizardStep(1));
+    wizardStep2PrevBtn.addEventListener('click', () => showWizardStep(0));
+    wizardStep2NextBtn.addEventListener('click', () => {
+        if (getKeyStrength(wizardSecretKeyEl.value) >= 3) { // Require at least "Weak"
+            secretKey = wizardSecretKeyEl.value; // Temporarily store, save at end
+            showWizardStep(2);
+        } else {
+            showToast("密钥强度不足，请设置一个更强的密钥。", "warning");
+        }
+    });
+    wizardStep3PrevBtn.addEventListener('click', () => showWizardStep(1));
+    wizardStep3NextBtn.addEventListener('click', () => {
+        smartLockEnabled = enableSmartLockEl.checked; // Temporarily store
+        showWizardStep(3);
+    });
+    wizardStep4PrevBtn.addEventListener('click', () => showWizardStep(2));
+    wizardStep4NextBtn.addEventListener('click', () => {
+        if (confirmPrivateUseEl.checked) {
+            showWizardStep(4);
+        } else {
+            showToast("请确认您已阅读并同意使用条款。", "warning");
+        }
+    });
+    wizardStep5PrevBtn.addEventListener('click', () => showWizardStep(3)); // Go back to smart lock settings
+
+    wizardSecretKeyEl.addEventListener('input', () => {
+        const score = updateKeyStrengthVisuals(wizardSecretKeyEl.value, wizardKeyStrengthIndicatorEl, wizardKeyStrengthSuggestionEl);
+        wizardStep2NextBtn.disabled = score < 1; // Require at least "Weak" (score 3)
+    });
+
+    confirmPrivateUseEl.addEventListener('change', () => {
+        wizardStep4NextBtn.disabled = !confirmPrivateUseEl.checked;
+    });
+    
+    startUsingAppBtn.addEventListener('click', () => {
+        // Save all settings from wizard
+        localStorage.setItem(LOCAL_STORAGE_KEY_NAME, secretKey);
+        localStorage.setItem(LOCAL_STORAGE_SMART_LOCK_ENABLED, smartLockEnabled.toString());
+        localStorage.setItem(LOCAL_STORAGE_SETUP_COMPLETE, "true");
+        
+        setupWizardEl.style.display = "none";
+        startApp();
+        showToast("设置完成，欢迎使用乌龟翻译!", "success");
+    });
+
+    function startApp() {
+        appContainerEl.style.display = "block";
+        appInitialized = true;
+        // Initialize existing app functionalities
+        loadKeyFromLocalStorage(); // Load the just-saved key for the app
+        loadSmartLockSetting(); // Load smart lock for the app
+        updateDirectionLabels();
+        if(sourceTextEl.value) { 
+            debouncedTranslate();
+        } else { 
+            updateTextCounts("", sourceCountsEl);
+            updateTextCounts("", targetCountsEl);
+        }
+        toggleActionButtons();
+        toggleFileCryptoButtons(!!secretKey); // Enable/disable file crypto based on key presence
+    }
+    
+    function loadAppSettings() {
+        const savedKey = localStorage.getItem(LOCAL_STORAGE_KEY_NAME);
+        if (savedKey) secretKey = savedKey;
+
+        const savedSmartLock = localStorage.getItem(LOCAL_STORAGE_SMART_LOCK_ENABLED);
+        if (savedSmartLock !== null) smartLockEnabled = savedSmartLock === "true";
+        
+        // Update settings modal inputs if needed when it's opened
+        settingsSecretKeyEl.value = secretKey;
+        updateKeyStrengthVisuals(secretKey, keyStrengthIndicatorEl);
+        settingsEnableSmartLockEl.checked = smartLockEnabled;
+    }
+
+
+    // --- Smart Lock Logic ---
+    function toggleSmartLock(enable) {
+        smartLockEnabled = enable;
+        localStorage.setItem(LOCAL_STORAGE_SMART_LOCK_ENABLED, smartLockEnabled.toString());
+        if (enable) {
+            document.addEventListener('keydown', handleSmartLockKey);
+        } else {
+            document.removeEventListener('keydown', handleSmartLockKey);
+            closeModal(smartLockOverlayEl); // Close if it's open
+        }
+    }
+
+    function handleSmartLockKey(e) {
+        if (e.key === "Tab" && smartLockEnabled && appInitialized && !isAnyModalOpen()) {
+            // Check if focus is inside a textarea or input to allow normal tabbing
+            const activeEl = document.activeElement;
+            if (activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio')) {
+                 if (!smartLockOverlayEl.classList.contains('active')) { // only prevent default if lock isn't already active
+                    return; // Allow normal tabbing within inputs
+                }
+            }
+            e.preventDefault(); // Prevent default Tab behavior (focus change)
+            if (smartLockOverlayEl.classList.contains('active')) {
+                closeModal(smartLockOverlayEl);
+            } else {
+                openModal(smartLockOverlayEl);
+            }
+        } else if (e.key === " " && smartLockOverlayEl.classList.contains('active')) { // Space to unlock
+            e.preventDefault();
+            closeModal(smartLockOverlayEl);
+        }
+    }
+    
+    unlockSmartLockBtn.addEventListener('click', () => closeModal(smartLockOverlayEl));
+    
+    function isAnyModalOpen() {
+        // Add all modals that should prevent smart lock trigger
+        return settingsModalEl.style.display === 'flex' || 
+               oneTimeViewModalEl.style.display === 'flex' ||
+               publicNetworkWarningEl.style.display === 'flex' ||
+               (setupWizardEl.style.display !== 'none' && Array.from(wizardSteps).some(step => step.style.display === 'flex'));
+    }
+
+    function loadKeyFromLocalStorage() { // For main app, after setup
+        const savedKey = localStorage.getItem(LOCAL_STORAGE_KEY_NAME);
+        if (savedKey !== null) {
+            secretKey = savedKey;
+            settingsSecretKeyEl.value = secretKey; // Populate settings modal
+            updateKeyStrengthVisuals(secretKey, keyStrengthIndicatorEl);
+            return true;
+        }
+        return false;
+    }
+
+    function loadSmartLockSetting() {
+        const savedSmartLock = localStorage.getItem(LOCAL_STORAGE_SMART_LOCK_ENABLED);
+        if (savedSmartLock !== null) {
+            smartLockEnabled = savedSmartLock === "true";
+        } else {
+            // If not set (e.g. migration from old version or wizard skip somehow), default to true
+            smartLockEnabled = true; 
+            localStorage.setItem(LOCAL_STORAGE_SMART_LOCK_ENABLED, "true");
+        }
+        settingsEnableSmartLockEl.checked = smartLockEnabled;
+        // Add/remove global listener based on loaded setting
+        if (smartLockEnabled && appInitialized) {
+            document.addEventListener('keydown', handleSmartLockKey);
+        } else {
+            document.removeEventListener('keydown', handleSmartLockKey);
+        }
+    }
+
+
+    // --- Main App Logic (adapted from original) ---
+    function detectInputTypeAndUpdateLabels() {
+        const sourceValue = sourceTextEl.value;
+        let originalDirection = currentDirection;
+
+        if (!secretKey || !sourceValue.trim()) {
+            currentDirection = "TextToCode";
+        } else {
+            // Try to decode. If successful and it looks like Base64, assume it's code.
+            const decodeAttempt = turtleDecode(sourceValue, secretKey);
+            if (decodeAttempt.success && isPotentiallyBase64(sourceValue)) {
+                currentDirection = "CodeToText";
+            } else {
+                currentDirection = "TextToCode";
+            }
+        }
+        if (originalDirection !== currentDirection) {
+            updateDirectionLabels();
+        }
+    }
+
+    function handleTranslation(isTriggeredBySwap = false) {
+        const sourceValue = sourceTextEl.value;
+        
+        if (!secretKey && sourceValue.trim() !== "") {
+             targetTextEl.value = "错误：未设置主密钥。请通过设置或初始向导设置密钥。";
+             updateTextCounts(sourceValue, sourceCountsEl);
+             updateTextCounts("", targetCountsEl);
+             toggleActionButtons();
+             return;
+        }
+        if (!sourceValue.trim()) {
+            targetTextEl.value = "";
+            updateTextCounts("", sourceCountsEl);
+            updateTextCounts("", targetCountsEl);
+            toggleActionButtons();
+            return;
+        }
+
+        if (!isTriggeredBySwap) {
+            detectInputTypeAndUpdateLabels();
+        }
+
+        let result;
+        if (currentDirection === "TextToCode") {
+            result = turtleEncode(sourceValue, secretKey);
+        } else { 
+            result = turtleDecode(sourceValue, secretKey);
+        }
+
+        if (result.success) {
+            targetTextEl.value = result.data;
+        } else {
+            targetTextEl.value = result.message || "未知错误。";
+        }
+        updateTextCounts(sourceValue, sourceCountsEl);
+        updateTextCounts(result.success ? result.data : "", targetCountsEl);
+        toggleActionButtons();
+    }
+    
+    const debouncedTranslate = debounce(handleTranslation, 250);
+
+    function updateDirectionLabels() {
+        if (currentDirection === "TextToCode") {
+            sourceLangLabelEl.innerHTML = "✍️ 文本";
+            targetLangLabelEl.innerHTML = "🐢 龟语编码";
+            sourcePlaceholderEl.innerHTML = `<div class="title">✍️ 输入以翻译.</div><div class="subtitle">在此键入、粘贴或拖放文本文件。</div>`;
+            targetPlaceholderEl.innerHTML = `<div class="title">🔒 结果将显示于此.</div><div class="subtitle">结果会自动出现，无需手动点击。</div>`;
+        } else {
+            sourceLangLabelEl.innerHTML = "🐢 龟语编码";
+            targetLangLabelEl.innerHTML = "文本";
+            sourcePlaceholderEl.innerHTML = `<div class="title">🐢 输入龟语以翻译.</div><div class="subtitle">在此键入、粘贴或拖放龟语编码文件。</div>`;
+            targetPlaceholderEl.innerHTML = `<div class="title">✍️ 结果将显示于此.</div><div class="subtitle">结果会自动出现，无需手动点击。</div>`;
+        }
+        toggleActionButtons();
+    }
+
+    function countWords(str) {
+        if (!str || !str.trim()) return 0;
+        return str.trim().split(/\s+/).length;
+    }
+    function updateTextCounts(text, el) {
+        const charCount = text ? text.length : 0;
+        const wordCount = countWords(text || "");
+        el.textContent = `字符: ${charCount}, 词语: ${wordCount}`;
+    }
+
+    function toggleActionButtons() {
+        const targetHasValidText = targetTextEl.value.trim() && !targetTextEl.value.startsWith("无法") && !targetTextEl.value.startsWith("请输入") && !targetTextEl.value.startsWith("解码失败") && !targetTextEl.value.startsWith("错误");
+
+        if (currentDirection === "CodeToText" && targetHasValidText) {
+            speakTargetBtn.classList.remove('hidden');
+            oneTimeViewBtn.classList.remove('hidden');
+        } else {
+            speakTargetBtn.classList.add('hidden');
+            oneTimeViewBtn.classList.add('hidden');
+        }
+    }
+
+    function toggleFileCryptoButtons(enabled) {
+        encryptFileBtn.disabled = !enabled;
+        decryptFileBtn.disabled = !enabled;
+        if (!enabled) {
+            encryptFileBtn.title = "请先设置密钥";
+            decryptFileBtn.title = "请先设置密钥";
+        } else {
+            encryptFileBtn.title = "";
+            decryptFileBtn.title = "";
+        }
+    }
+    
+    // --- Settings Modal (Post-Setup) ---
+    settingsBtn.addEventListener('click', () => {
+        // Load current settings into modal inputs
+        settingsSecretKeyEl.value = secretKey; 
+        updateKeyStrengthVisuals(secretKey, keyStrengthIndicatorEl); // Use the main key strength indicator
+        settingsEnableSmartLockEl.checked = smartLockEnabled;
+        openModal(settingsModalEl);
+    });
+    closeSettingsModalBtn.addEventListener('click', () => closeModal(settingsModalEl));
+    
+    settingsSecretKeyEl.addEventListener('input', (e) => {
+        updateKeyStrengthVisuals(e.target.value, keyStrengthIndicatorEl);
+    });
+
+    saveSettingsKeyBtn.addEventListener('click', () => {
+        const newKey = settingsSecretKeyEl.value;
+        const newSmartLockState = settingsEnableSmartLockEl.checked;
+
+        if (getKeyStrength(newKey) < 3 && newKey !== "") { // Allow empty to "remove" key, but not weak one
+            showToast("新密钥强度不足，请使用更强的密钥或留空以尝试清除(不推荐)。", "warning");
+            return;
+        }
+        
+        secretKey = newKey;
+        localStorage.setItem(LOCAL_STORAGE_KEY_NAME, secretKey);
+        updateKeyStrengthVisuals(secretKey, keyStrengthIndicatorEl); // Update indicator in modal
+        
+        toggleSmartLock(newSmartLockState); // This also saves to localStorage
+
+        closeModal(settingsModalEl);
+        showToast("设置已保存!", "success");
+        debouncedTranslate(); // Re-translate with new key if text is present
+        toggleFileCryptoButtons(!!secretKey);
+    });
+
+
+    // --- Event Listeners (Mostly unchanged from original, ensure they work with new setup) ---
+    sourceTextEl.addEventListener('input', () => {
+        if (!appInitialized) return;
+        debouncedTranslate();
+        updateTextCounts(sourceTextEl.value, sourceCountsEl);
+    });
+    
+    swapButtonEl.addEventListener('click', () => {
+        if (!appInitialized || !secretKey) return;
+        const sourceContent = sourceTextEl.value;
+        // const targetContent = targetTextEl.value; // Not needed, will re-evaluate
+        sourceTextEl.value = targetTextEl.value; // Put current target into source
+        
+        if (currentDirection === "TextToCode") currentDirection = "CodeToText";
+        else currentDirection = "TextToCode";
+        
+        updateDirectionLabels(); // Update labels based on new direction
+        handleTranslation(true); // Translate based on new source and direction
+    });
+
+    copySourceBtn.addEventListener('click', () => {
+        if (!appInitialized) return;
+        if (!sourceTextEl.value) { showToast("原文区无内容可复制。", "warning"); return; }
+        navigator.clipboard.writeText(sourceTextEl.value)
+            .then(() => showToast("原文已复制! 👍", "success"))
+            .catch(err => { 
+                try { // Fallback for iframes/restricted environments
+                    const textArea = document.createElement("textarea");
+                    textArea.value = sourceTextEl.value;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showToast("原文已复制 (fallback)! 👍", "success");
+                } catch (copyErr) {
+                    showToast("复制原文失败。", "error"); console.error('Failed to copy source text: ', err, copyErr);
+                }
+            });
+    });
+
+    copyTargetBtn.addEventListener('click', () => {
+        if (!appInitialized) return;
+        if (!targetTextEl.value || targetTextEl.value.startsWith("无法") || targetTextEl.value.startsWith("请输入") || targetTextEl.value.startsWith("解码失败")  || targetTextEl.value.startsWith("错误")) {
+             showToast("译文区无有效内容可复制。", "warning"); return;
+        }
+        navigator.clipboard.writeText(targetTextEl.value)
+            .then(() => showToast("译文已复制! 🎉", "success"))
+            .catch(err => {
+                try { // Fallback
+                    const textArea = document.createElement("textarea");
+                    textArea.value = targetTextEl.value;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showToast("译文已复制 (fallback)! 🎉", "success");
+                } catch (copyErr) {
+                    showToast("复制译文失败。", "error"); console.error('Failed to copy target text: ', err, copyErr);
+                }
+            });
+    });
+
+    clearSourceBtn.addEventListener('click', () => {
+        if (!appInitialized) return;
+        sourceTextEl.value = "";
+        targetTextEl.value = ""; 
+        updateTextCounts("", sourceCountsEl);
+        updateTextCounts("", targetCountsEl);
+        currentDirection = "TextToCode"; // Reset direction
+        updateDirectionLabels(); 
+        toggleActionButtons();
+        showToast("原文已清空。", "info", 1500);
+    });
+
+    uploadBtn.addEventListener('click', () => { if (appInitialized) fileInputEl.click(); });
+    fileInputEl.addEventListener('change', (event) => {
+        if (!appInitialized) return;
+        const file = event.target.files[0];
+        if (file) {
+            if (!file.type.startsWith('text/')) {
+                 showToast("请上传纯文本文件 (.txt, .md等)。", "warning"); fileInputEl.value = ''; return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                sourceTextEl.value = e.target.result;
+                debouncedTranslate();
+                showToast(`文件 "${file.name}" 已加载到原文区。`, "success");
+            };
+            reader.onerror = () => showToast(`读取文件 "${file.name}" 时出错。`, "error");
+            reader.readAsText(file);
+            fileInputEl.value = ''; 
+        }
+    });
+
+    saveBtn.addEventListener('click', () => {
+        if (!appInitialized) return;
+        const content = targetTextEl.value;
+        if (!content || content.startsWith("无法") || content.startsWith("请输入") || content.startsWith("解码失败") || content.startsWith("错误")) {
+            showToast("没有有效内容可保存。", "warning"); return;
+        }
+        showToast("正在准备下载...", "info", 1000);
+        const defaultFilename = currentDirection === "TextToCode" ? "turtle_code.txt" : "translated_text.txt";
+        
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = defaultFilename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        showToast(`文件 "${defaultFilename}" 已开始下载。`, "success");
+    });
+
+    // File Encryption/Decryption Logic
+    encryptFileBtn.addEventListener('click', () => { if (appInitialized && !encryptFileBtn.disabled) encryptFileInputEl.click(); });
+    decryptFileBtn.addEventListener('click', () => { if (appInitialized && !decryptFileBtn.disabled) decryptFileInputEl.click(); });
+
+    encryptFileInputEl.addEventListener('change', (event) => handleFileOperation(event, 'encrypt'));
+    decryptFileInputEl.addEventListener('change', (event) => handleFileOperation(event, 'decrypt'));
+
+    function handleFileOperation(event, mode) {
+        if (!appInitialized) return;
+        const file = event.target.files[0];
+        const inputEl = mode === 'encrypt' ? encryptFileInputEl : decryptFileInputEl;
+        inputEl.value = ''; // Reset input
+
+        if (!file) return;
+        if (!secretKey) { showToast(`请先设置密钥以${mode === 'encrypt' ? '加密' : '解密'}文件。`, "warning"); return; }
+        if (mode === 'decrypt' && !file.name.endsWith(".turtlec")) { showToast("请选择 .turtlec 加密文件进行解密。", "warning"); return; }
+        // For encryption, any text file is fine.
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const fileContent = e.target.result;
+            let result;
+            if (mode === 'encrypt') {
+                result = turtleEncode(fileContent, secretKey);
+                if (result.success) {
+                    const blob = new Blob([result.data], { type: 'application/octet-stream' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = file.name + ".turtlec";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                    showToast(`文件 "${file.name}" 已加密并下载为 "${link.download}"`, "success");
+                } else {
+                    showToast("加密文件失败: " + result.message, "error");
+                }
+            } else { // decrypt
+                result = turtleDecode(fileContent, secretKey);
+                if (result.success) {
+                    sourceTextEl.value = result.data; // Load decrypted content to source
+                    currentDirection = "CodeToText"; // Assume we want to see it as text
+                    updateDirectionLabels();
+                    handleTranslation(true); // Process it for the target field
+                    showToast(`文件 "${file.name}" 已解密并加载到原文区。`, "success");
+                } else {
+                    showToast("解密文件失败: " + result.message, "error");
+                }
+            }
+        };
+        reader.onerror = () => showToast(`读取文件 "${file.name}" 时出错。`, "error");
+        reader.readAsText(file);
+    }
+    
+    // One-Time View (Existing, ensure works)
+    oneTimeViewBtn.addEventListener('click', () => {
+        if (!appInitialized) return;
+        const content = targetTextEl.value;
+        if (!content.trim() || !targetTextEl.value.trim() || targetTextEl.value.startsWith("无法") || targetTextEl.value.startsWith("请输入") || targetTextEl.value.startsWith("解码失败") || targetTextEl.value.startsWith("错误")) {
+            showToast("没有有效内容可供阅后即焚。", "warning"); return;
+        }
+
+        oneTimeViewContentEl.textContent = content;
+        openModal(oneTimeViewModalEl);
+
+        const dismissOnce = () => {
+            closeModal(oneTimeViewModalEl);
+            targetTextEl.value = ""; // Clear target text after viewing
+            updateTextCounts("", targetCountsEl);
+            toggleActionButtons();
+            oneTimeViewModalEl.removeEventListener('click', dismissOnce);
+            document.removeEventListener('keydown', keyDismissOnce);
+        };
+        const keyDismissOnce = (e) => { if (e.key === "Escape" || e.key === " ") { dismissOnce(); }};
+        oneTimeViewModalEl.addEventListener('click', dismissOnce); // Click anywhere on modal backdrop
+        document.addEventListener('keydown', keyDismissOnce);
+    });
+
+    // Speak Target (Existing, ensure works)
+    speakTargetBtn.addEventListener('click', () => {
+        if (!appInitialized) return;
+        if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+            showToast("您的浏览器不支持语音合成。", "warning"); return;
+        }
+        const textToSpeak = targetTextEl.value;
+        if (!textToSpeak.trim() || targetTextEl.value.startsWith("无法") || targetTextEl.value.startsWith("请输入") || targetTextEl.value.startsWith("解码失败") || targetTextEl.value.startsWith("错误")) {
+            showToast("没有可朗读的内容。", "warning"); return;
+        }
+        try {
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            // Potentially set language if known, e.g. utterance.lang = 'zh-CN';
+            window.speechSynthesis.cancel(); 
+            window.speechSynthesis.speak(utterance);
+        } catch (e) { showToast("朗读时发生错误。", "error"); console.error("Speech synthesis error:", e); }
+    });
+
+    // Drag and drop for source textarea (text files only)
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        sourceTextEl.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false); // Prevent browser opening file
+    });
+    ['dragenter', 'dragover'].forEach(eventName => {
+        sourceTextEl.addEventListener(eventName, (e) => {
+            if (!appInitialized) return;
+            if (e.dataTransfer.types.includes('Files')) {
+                sourceTextEl.classList.add('bg-green-100', 'border-green-400');
+            }
+        }, false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+        sourceTextEl.addEventListener(eventName, () => {
+            if (!appInitialized) return;
+            sourceTextEl.classList.remove('bg-green-100', 'border-green-400');
+        }, false);
+    });
+    sourceTextEl.addEventListener('drop', (e) => {
+        if (!appInitialized) return;
+        preventDefaults(e); // Crucial here too
+        let dt = e.dataTransfer;
+        let files = dt.files;
+        if (files.length > 0) {
+            const file = files[0];
+             if (!file.type.startsWith('text/')) {
+                 showToast("请拖放纯文本文件到此区域。", "warning"); return;
+            }
+            const reader = new FileReader();
+            reader.onload = (readEvent) => {
+                sourceTextEl.value = readEvent.target.result;
+                debouncedTranslate();
+                showToast(`文件 "${file.name}" 已拖放并加载。`, "success");
+            };
+            reader.onerror = () => showToast(`读取文件 "${file.name}" 时出错。`, "error");
+            reader.readAsText(file);
+        }
+    }, false);
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    // --- Initial Load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        checkEnvironment(); // This will either show warning or start setup/app
+    });
+
+    </script>
+</body>
+</html>
