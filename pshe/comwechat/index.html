@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeChat - Passive, Assersive, or Agressive?</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div class="wechat-container">
+        <!-- Reset Button -->
+        <button id="reset-btn" class="reset-button">Reset</button>
+
+        <!-- Contact List (Left Column) -->
+        <div class="contact-list">
+            <div class="contact-list-header">
+                <h2>Messages</h2>
+            </div>
+            <div class="contacts">
+                <div class="contact" data-contact="alex">
+                    <img src="static/assets/avatars/alex.png" alt="Victor Ruan" class="contact-avatar">
+                    <div class="contact-info">
+                    <div class="contact-info">
+                        <div class="contact-name">Victor Ruan</div>
+                        <div class="contact-preview">Hey, got a sec?</div>
+                    </div>
+                </div>
+                <div class="contact" data-contact="ms_davis">
+                    <img src="static/assets/avatars/ms_davis.png" alt="Mr. Dave" class="contact-avatar">
+                    <div class="contact-info">
+                        <div class="contact-name">Mr. Dave</div>
+                        <div class="contact-preview">I am writing to you about your group project...</div>
+                    </div>
+                </div>
+                <div class="contact" data-contact="maya">
+                    <img src="static/assets/avatars/maya.png" alt="Maya" class="contact-avatar">
+                    <div class="contact-info">
+                        <div class="contact-name">Maya</div>
+                        <div class="contact-preview">Hey. Are you free to talk later tonight?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Screen (shown initially) -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="welcome-content">
+                <div class="welcome-content-main">
+                    <!-- Main Title (Transparent/Non-card style) -->
+                    <div class="welcome-title">
+                        <h1><i class="fas fa-comments"></i></h1>
+                        <h2>Passive, Assersive, or Agressive?</h2>
+                        <p>Begin chatting and learning about the difference communication styles.</p>
+                    </div>
+
+                    <!-- 4 Small Icon Cards in One Row -->
+                    <div class="welcome-icon-cards">
+                        <div class="icon-card">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="icon-card">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="icon-card">
+                            <i class="fas fa-mouse"></i>
+                        </div>
+                        <div class="icon-card">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Instruction -->
+                    <div class="welcome-instruction" style="background: none; box-shadow: none; border: none;">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <span>Choose someone to start chatting!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Window (Right Column) -->
+        <div id="chat-window" class="chat-window" style="display: none;">
+            <div class="chat-header">
+                <img id="chat-avatar" src="" alt="" class="chat-avatar">
+                <div class="chat-contact-name"></div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be dynamically added here -->
+            </div>
+
+            <div class="chat-input-area">
+                <div class="chat-options" id="chat-options">
+                    <!-- Response options will be dynamically added here -->
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="Type a message..." disabled>
+                    <div class="chat-input-icons">
+                        <span class="icon">😊</span>
+                        <span class="icon">+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="report-modal">
+        <div class="report-content">
+            <h2 id="report-title"></h2>
+            <p id="report-summary"></p>
+            <button id="try-again-btn" class="try-again-button">Try Again</button>
+        </div>
+    </div>
+
+    <script src="static/js/main.js"></script>
+</body>
+</html>
