@@ -141,6 +141,18 @@
     /* Near completion glow to encourage finishing */
     .video-wrap.nearly-done { outline-color: rgba(168,181,162,0.65); box-shadow: 0 0 0 3px rgba(168,181,162,0.18), 0 8px 24px rgba(0,0,0,0.08); }
   </style>
+  <script>
+    // Redirect beta subdomain to main domain, preserving path/query/hash
+    (function(){
+      try{
+        var h = location.hostname;
+        if (h === 'beta.hendyturtle.site' || h.endsWith('.beta.hendyturtle.site')) {
+          var target = 'https://hendyturtle.site' + location.pathname + location.search + location.hash;
+          location.replace(target);
+        }
+      } catch(e){}
+    })();
+  </script>
 </head>
 <body>
   <header>
