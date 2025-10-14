@@ -1,92 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Cycle</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-        }
-        
-        .container {
-            max-width: 1000px;
-            padding: 2rem;
-            background-color: #fff;
-            border-radius: 8px;
-            margin: 2rem;
-        }
-        
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-            letter-spacing: 1px;
-        }
-        
-        .name {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: #7f8c8d;
-        }
-        
-        .video-container {
-            margin: 2rem 0;
-        }
-        
-        video {
-            width: 100%;
-            max-width: 600px;
-            height: auto;
-            border-radius: 4px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .credits {
-            margin-top: 2rem;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #555;
-        }
-        
-        .credits div {
-            margin: 0.5rem 0;
-        }
-        
-        .highlight {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rock Cycle</title>
+  <style>
+    :root {
+      /* Morandi palette */
+      --m-bg: #f3f1ef;
+      --m-ink: #4a4a48;
+      --m-surface: #f7f5f3;
+      --m-accent: #a8b5a2;    /* sage */
+      --m-accent-2: #b7a6a4;  /* dusty rose */
+      --m-accent-3: #a9a0b1;  /* lavender */
+      --radius: 12px;
+      --shadow: 0 6px 22px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif;
+      color: var(--m-ink);
+      background: radial-gradient(1200px 800px at 10% 0%, #f7f6f4 0%, var(--m-bg) 60%, #eceae8 100%);
+    }
+
+    header {
+      padding: 18px 20px 10px;
+      text-align: center;
+    }
+    h1 { margin: 0; font-size: clamp(24px, 3.2vw, 38px); letter-spacing: .4px; }
+    .meta { color: #6f6e6b; font-size: 14px; }
+    .legend { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+    .chip { padding: 4px 10px; border-radius: 999px; font-size: 12px; border: 1px solid rgba(0,0,0,0.06); }
+    .c1{ background:#e5ebe1 } .c2{ background:#eadfdd } .c3{ background:#e6e3ec }
+
+    /* Full-width stage that never exceeds viewport on desktop */
+    .stage {
+      width: 100%;
+      background: var(--m-surface);
+      box-shadow: var(--shadow);
+      border-top: 1px solid rgba(0,0,0,0.04);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .player {
+      width: min(1200px, 94vw);
+      margin: 0 auto;
+      padding: clamp(10px, 2vw, 18px);
+    }
+
+    /* Clear 16:9 area that fits viewport */
+    .video-wrap {
+      opacity: 1;
+      transition: opacity .3s ease;
+      position: relative;
+      width: 100%;
+      background: #efedea;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+      max-height: calc(100vh - 220px); /* keep inside screen on desktop */
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      outline: 2px solid transparent;
+      outline-offset: 0;
+    }
+    .video-wrap:focus-within { outline-color: rgba(168,181,162,0.45); }
+
+    video { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+    /* Controls: mainstream-like layout */
+    .controls {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding-top: 10px;
+      user-select: none;
+    }
+
+    .cluster { display: inline-flex; align-items: center; gap: 8px; }
+
+    .icon-btn {
+      appearance: none; border: 0; cursor: pointer;
+      background: linear-gradient(180deg, #e9e6e3, #e3e0dc);
+      color: var(--m-ink);
+      padding: 8px; border-radius: 10px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 2px rgba(0,0,0,0.06);
+      transition: transform .04s ease, filter .15s ease;
+      display: inline-grid; place-items: center;
+    }
+    .icon-btn:active { transform: translateY(1px); }
+    .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .seek {
+      --played: 0%;
+      --buffered: 0%;
+      appearance: none; height: 8px; border-radius: 999px; width: 100%; outline: none;
+      background:
+        linear-gradient(90deg, var(--m-accent), var(--m-accent)) 0/var(--played) 100% no-repeat,
+        linear-gradient(90deg, #cfcac6, #cfcac6) 0/var(--buffered) 100% no-repeat,
+        linear-gradient(90deg, #e1dedb, #e1dedb),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0 1px, transparent 1px 25%);
+    }
+    .seek::-webkit-slider-thumb {
+      appearance: none; width: 14px; height: 14px; background: #fff; border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15); box-shadow: 0 1px 1px rgba(0,0,0,0.06);
+    }
+
+    .time { font-variant-numeric: tabular-nums; font-size: 12px; color: #6f6e6b; min-width: 110px; text-align: center; }
+
+    .vol-wrap { display: inline-flex; align-items: center; gap: 6px; }
+    .vol { width: 120px; appearance: none; height: 6px; border-radius: 999px; background: linear-gradient(90deg, var(--m-accent-2), var(--m-accent-3)); outline: none; }
+    .vol::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; background: #fff; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); }
+
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    /* Focus vignette to draw eye to content */
+    .video-wrap::after {
+      content: "";
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: radial-gradient(90% 70% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.06) 100%);
+    }
+
+    /* Subtle control emphasis on hover (non-intrusive) */
+    .player:hover .controls { filter: none; }
+    .controls { filter: saturate(.95) contrast(1.02); }
+
+    /* Play button gentle pulse if idle */
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(168,181,162,0.0); }
+      50% { box-shadow: 0 0 0 6px rgba(168,181,162,0.18); }
+    }
+    .icon-btn.pulse { animation: pulse 1.8s ease-in-out infinite; }
+
+    /* While playing, tiny uplift on legend chips to signal activity */
+    body.playing .legend .chip { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: transform .2s ease, box-shadow .2s ease; }
+
+    /* Near completion glow to encourage finishing */
+    .video-wrap.nearly-done { outline-color: rgba(168,181,162,0.65); box-shadow: 0 0 0 3px rgba(168,181,162,0.18), 0 8px 24px rgba(0,0,0,0.08); }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Rock Cycle</h1>
-        <div class="name">Hendy & Alisa 8H</div>
-        
-        <div class="video-container">
-            <video controls>
-                <source src="video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-        
-        <div class="credits">
-            <div><span class="highlight">Editing:</span> Hendy</div>
-            <div><span class="highlight">Photography:</span> Hendy, Alisa</div>
-            <div><span class="highlight">Voiceover:</span> Alisa (did not complete)</div>
-            <div><span class="highlight">Planning:</span> Hendy</div>
-        </div>
+  <header>
+    <h1>Rock Cycle</h1>
+    <div class="meta">Hendy & Alisa · 8H</div>
+    <div class="legend">
+      <span class="chip c1">Igneous</span>
+      <span class="chip c2">Sedimentary</span>
+      <span class="chip c3">Metamorphic</span>
     </div>
+  </header>
+
+  <section class="stage">
+    <div class="player" aria-label="Rock Cycle video player">
+      <div class="video-wrap">
+        <video id="video" preload="metadata" playsinline
+               controlslist="nodownload noplaybackrate noremoteplayback"
+               disablepictureinpicture
+               oncontextmenu="return false">
+          <source src="video.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <div class="controls" role="group" aria-label="player controls">
+        <div class="cluster">
+          <button class="icon-btn" id="play" aria-label="Play/Pause" title="Play/Pause">
+            <svg viewBox="0 0 24 24" id="ico-play"><path d="M8 5v14l11-7-11-7z"/></svg>
+          </button>
+          <button class="icon-btn" id="restart" aria-label="Restart" title="Restart">
+            <svg viewBox="0 0 24 24"><path d="M12 6V3l-4 4 4 4V8c2.76 0 5 2.24 5 5s-2.24 5-5 5a5 5 0 0 1-4.58-3H5.26A7 7 0 0 0 12 21c3.87 0 7-3.13 7-7s-3.13-7-7-7z"/></svg>
+          </button>
+          <span class="time" id="time">0:00 / 0:00</span>
+        </div>
+
+        <input class="seek" id="seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="Seek" />
+
+        <div class="cluster">
+          <div class="vol-wrap">
+            <button class="icon-btn" id="mute" aria-label="Mute/Unmute" title="Mute/Unmute">
+              <svg viewBox="0 0 24 24" id="ico-vol"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
+            </button>
+            <input class="vol" id="vol" type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume" />
+          </div>
+          <button class="icon-btn" id="fs" aria-label="Fullscreen" title="Fullscreen">
+            <svg viewBox="0 0 24 24" id="ico-fs"><path d="M7 14H5v5h5v-2H7v-3zm12 0h-2v3h-3v2h5v-5zM7 7h3V5H5v5h2V7zm12 3V5h-5v2h3v3h2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <span class="sr" aria-hidden="true" id="kb-help">Keyboard: Space/P toggle play, R restart, ←/→ seek 5s.</span>
+
+  <script>
+    const v = document.getElementById('video');
+    const play = document.getElementById('play');
+    const restart = document.getElementById('restart');
+    const seek = document.getElementById('seek');
+    const timeEl = document.getElementById('time');
+    const vol = document.getElementById('vol');
+    const mute = document.getElementById('mute');
+    const fs = document.getElementById('fs');
+    const icoPlay = () => '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7-11-7z"/></svg>';
+    const icoPause = () => '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
+    const icoVol = (level) => {
+      if (level === 0) return '<svg viewBox="0 0 24 24"><path d="M16.5 12a4.5 4.5 0 0 0-1.5-3.35v6.7A4.5 4.5 0 0 0 16.5 12z"/><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M19 8l-1.5 1.5L20 12l-2.5 2.5L19 16l4-4-4-4z"/></svg>';
+      if (level < 0.5) return '<svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M14 9.23v5.54A3.5 3.5 0 0 0 17.5 12 3.5 3.5 0 0 0 14 9.23z"/></svg>';
+      return '<svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M16.5 12a4.5 4.5 0 0 0-1.5-3.35v6.7A4.5 4.5 0 0 0 16.5 12z"/><path d="M14 5.23v2.06A7 7 0 0 1 21 12a7 7 0 0 1-7 6.77v2.06A9.05 9.05 0 0 0 23 12 9.05 9.05 0 0 0 14 5.23z"/></svg>';
+    };
+
+    const fmt = s => {
+      if (!Number.isFinite(s)) return '0:00';
+      const m = Math.floor(s/60);
+      const ss = Math.floor(s%60).toString().padStart(2,'0');
+      return `${m}:${ss}`;
+    };
+
+    // lock playback rate (no speed control)
+    const lockRate = () => { if (v.playbackRate !== 1) v.playbackRate = 1; };
+
+    const updateTimeAndBars = () => {
+      timeEl.textContent = `${fmt(v.currentTime)} / ${fmt(v.duration)}`;
+      seek.value = v.currentTime;
+      const played = (v.currentTime/(v.duration||1))*100;
+      let buff = 0; if (v.buffered && v.buffered.length) { try { buff = (v.buffered.end(v.buffered.length-1)/(v.duration||1))*100; } catch(e){} }
+      seek.style.setProperty('--played', played + '%');
+      seek.style.setProperty('--buffered', Math.max(0, buff - played) + '%');
+    };
+
+    v.addEventListener('loadedmetadata', () => {
+      seek.max = v.duration || 100;
+      updateTimeAndBars();
+      lockRate();
+    });
+
+    v.addEventListener('progress', updateTimeAndBars);
+    v.addEventListener('timeupdate', updateTimeAndBars);
+
+    const updatePlayUI = () => { play.innerHTML = v.paused ? icoPlay() : icoPause(); };
+
+    play.addEventListener('click', () => {
+      if (v.paused) v.play(); else v.pause();
+    });
+
+    v.addEventListener('play', updatePlayUI);
+    v.addEventListener('pause', updatePlayUI);
+
+    restart.addEventListener('click', () => { v.currentTime = 0; v.play(); });
+
+    seek.addEventListener('input', () => { v.currentTime = Number(seek.value); });
+
+    // Volume + mute icon
+    const renderVol = () => { document.getElementById('ico-vol')?.remove(); mute.innerHTML = icoVol(v.muted ? 0 : v.volume); };
+    vol.addEventListener('input', () => { v.volume = Number(vol.value); v.muted = v.volume === 0; renderVol(); });
+    mute.addEventListener('click', () => { v.muted = !v.muted; if (!v.muted && v.volume === 0) { v.volume = 0.5; vol.value = 0.5; } renderVol(); });
+    v.addEventListener('volumechange', () => { vol.value = v.muted ? 0 : v.volume; renderVol(); });
+
+    // Fullscreen
+    fs.addEventListener('click', () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else v.requestFullscreen?.();
+    });
+
+    // Keyboard shortcuts: Space/P toggle, R restart, Left/Right seek 5s
+    document.addEventListener('keydown', (e) => {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea') return;
+      if (e.code === 'Space' || e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        if (v.paused) v.play(); else v.pause();
+      } else if (e.key === 'r' || e.key === 'R') {
+        v.currentTime = 0; v.play();
+      } else if (e.key === 'ArrowLeft') {
+        v.currentTime = Math.max(0, v.currentTime - 5);
+      } else if (e.key === 'ArrowRight') {
+        v.currentTime = Math.min((v.duration||0), v.currentTime + 5);
+      }
+    });
+
+    // Non-intrusive visual psychology touches:
+    // 1) Focus halo when video or controls focused (guides attention without popups)
+    // 2) Progress bar shows played vs buffered (reduces uncertainty)
+    // 3) Consistent iconography + whitespace (clear affordances)
+
+    // Prevent context menu over video (basic deterrent)
+    v.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // Initialize icons/UI
+    updatePlayUI();
+    renderVol();
+    // Psychology micro-touches
+    let pulseTimer;
+    const playBtn = document.getElementById('play');
+    const wrap = document.querySelector('.video-wrap');
+    const setIdlePulse = () => {
+      clearTimeout(pulseTimer);
+      if (!v.paused) { playBtn.classList.remove('pulse'); return; }
+      pulseTimer = setTimeout(() => { if (v.paused) playBtn.classList.add('pulse'); }, 2500);
+    };
+
+    const setPlayingState = () => { document.body.classList.toggle('playing', !v.paused); };
+
+    const setNearlyDone = () => {
+      if (!v.duration) return;
+      const frac = v.currentTime / v.duration;
+      wrap.classList.toggle('nearly-done', frac > 0.9);
+    };
+
+    let firstPlayDone = false;
+    v.addEventListener('play', () => { 
+      playBtn.classList.remove('pulse'); 
+      setPlayingState(); 
+      if (!firstPlayDone) { document.querySelector('.video-wrap').style.opacity = '0'; requestAnimationFrame(()=>{ document.querySelector('.video-wrap').style.opacity = '1'; }); firstPlayDone = true; }
+    });
+    v.addEventListener('pause', () => { setPlayingState(); setIdlePulse(); });
+    v.addEventListener('loadedmetadata', () => { setPlayingState(); setIdlePulse(); setNearlyDone(); });
+    v.addEventListener('timeupdate', setNearlyDone);
+
+    // Kick off initial state after script load
+    setPlayingState();
+    setIdlePulse();
+  </script>
 </body>
 </html>
