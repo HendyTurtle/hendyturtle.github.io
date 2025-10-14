@@ -233,8 +233,11 @@
     // lock playback rate (no speed control)
     const lockRate = () => { if (v.playbackRate !== 1) v.playbackRate = 1; };
 
+    const CAP = 210; // 3:30 display cap (UI only)
     const updateTimeAndBars = () => {
-      timeEl.textContent = `${fmt(v.currentTime)} / ${fmt(v.duration)}`;
+      const shownNow = Math.min(v.currentTime, CAP);
+      const shownTotal = Math.min(v.duration || 0, CAP);
+      timeEl.textContent = `${fmt(shownNow)} / ${fmt(shownTotal)}`;
       seek.value = v.currentTime;
       const played = (v.currentTime/(v.duration||1))*100;
       let buff = 0; if (v.buffered && v.buffered.length) { try { buff = (v.buffered.end(v.buffered.length-1)/(v.duration||1))*100; } catch(e){} }
