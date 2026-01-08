@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0 汤圆. 刷题</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "uy9an7z9x5");
+</script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-color: #f5f5f3;
+            --bg-secondary: #eaeae8;
+            --card-bg: #ffffff;
+            --text-main: #4a4a4a;
+            --text-light: #8c8c8c;
+            --text-muted: #b0b0b0;
+            --border-color: #e8e8e6;
+            
+            --opt-red: #e07a5f;
+            --opt-red-shadow: #b85c44;
+            --opt-blue: #3d5a80;
+            --opt-blue-shadow: #2b415e;
+            --opt-yellow: #e9c46a;
+            --opt-yellow-shadow: #c4a350;
+            --opt-green: #81b29a;
+            --opt-green-shadow: #638c76;
+            
+            --accent: #3d405b;
+            --accent-light: #545780;
+            --wrong: #d62828;
+            --correct: #2a9d8f;
+            --warning: #f4a261;
+            
+            --shadow-y: 4px;
+            --modal-bg: rgba(0,0,0,0.5);
+            --overlay-bg: rgba(255,255,255,0.98);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1e1e22;
+            --bg-secondary: #2a2a30;
+            --card-bg: #2d2d35;
+            --text-main: #e5e5e5;
+            --text-light: #a0a0a0;
+            --text-muted: #707070;
+            --border-color: #404048;
+            
+            --opt-red: #c96a52;
+            --opt-red-shadow: #8a4a3a;
+            --opt-blue: #4a6a8a;
+            --opt-blue-shadow: #3a4a5a;
+            --opt-yellow: #d4b05a;
+            --opt-yellow-shadow: #9a8040;
+            --opt-green: #6a9a82;
+            --opt-green-shadow: #4a7060;
+            
+            --accent: #6a6d8a;
+            --accent-light: #8a8daa;
+            --modal-bg: rgba(0,0,0,0.8);
+            --overlay-bg: rgba(30,30,34,0.98);
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--modal-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-box {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+        .modal-box.large {
+            max-width: 700px;
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .modal-content {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        .modal-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* === Button Styles === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            gap: 8px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            box-shadow: 0 var(--shadow-y) 0 var(--border-color);
+        }
+        .btn:active {
+            transform: translateY(var(--shadow-y));
+            box-shadow: 0 0 0 var(--border-color);
+        }
+        .btn.primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 var(--shadow-y) 0 rgba(0,0,0,0.3);
+        }
+        .btn.primary:hover {
+            background: var(--accent-light);
+        }
+        .btn.secondary {
+            background: var(--bg-secondary);
+            color: var(--text-main);
+        }
+        .btn.danger {
+            background: var(--opt-red);
+            color: white;
+            box-shadow: 0 var(--shadow-y) 0 var(--opt-red-shadow);
+        }
+        .btn.success {
+            background: var(--opt-green);
+            color: white;
+            box-shadow: 0 var(--shadow-y) 0 var(--opt-green-shadow);
+        }
+        .btn.ghost {
+            background: transparent;
+            box-shadow: none;
+            border: 2px solid var(--border-color);
+        }
+        .btn.ghost:active {
+            transform: scale(0.96);
+        }
+        .btn.large {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            border-radius: 18px;
+        }
+        .btn.small {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border-radius: 10px;
+        }
+        .btn.icon-only {
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* === Screen Container === */
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 60px;
+            min-height: 100vh;
+            flex-direction: column;
+            animation: fadeIn 0.4s ease;
+        }
+        .screen.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .logo-section {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        .logo-main {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+        .logo-main .zero {
+            font-size: 4.5rem;
+            background: linear-gradient(135deg, var(--opt-red), var(--opt-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .logo-sub {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+        .logo-author {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* === Stats Bar === */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-value.highlight {
+            color: var(--opt-green);
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* === Continue Card === */
+        .continue-card {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: none;
+        }
+        .continue-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(61, 64, 91, 0.3);
+        }
+        .continue-card.show {
+            display: block;
+        }
+        .continue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .continue-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .continue-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+        .continue-topic {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+        .continue-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        .continue-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .continue-bar-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+        }
+
+        /* === Input Section === */
+        .input-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+        }
+        .input-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .input-icon {
+            font-size: 1.5rem;
+        }
+        .input-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .borderless-input {
+            width: 100%;
+            min-height: 80px;
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+            font-family: inherit;
+        }
+        .borderless-input::placeholder {
+            color: var(--text-muted);
+        }
+        .input-placeholder-animated {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: opacity 0.3s;
+            line-height: 1.6;
+        }
+        .input-placeholder-animated.hidden {
+            opacity: 0;
+        }
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--accent);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .quick-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        .quick-tag {
+            padding: 6px 14px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .quick-tag:hover {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.05);
+        }
+        .quick-tag:active {
+            transform: scale(0.95);
+        }
+
+        .generate-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .generate-actions .btn {
+            flex: 1;
+            min-width: 140px;
+        }
+        .btn-subtitle {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            font-weight: normal;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* === Divider === */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 25px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        /* === Preset Section === */
+        .preset-section {
+            margin-bottom: 40px;
+        }
+        .preset-title {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+        .preset-card {
+            background: var(--card-bg);
+            padding: 18px 15px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .preset-card:hover {
+            border-color: var(--accent);
+            transform: scale(0.99);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .preset-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .preset-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .preset-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* === JSON Manual Section === */
+        .json-section {
+            margin-top: 10px;
+        }
+        .json-toggle {
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .json-toggle:hover {
+            color: var(--text-main);
+        }
+        .json-panel {
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        .json-panel.active {
+            display: block;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .json-input {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px dashed var(--border-color);
+            border-radius: 14px;
+            background: var(--bg-secondary);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            resize: vertical;
+            outline: none;
+            margin-top: 10px;
+        }
+        .json-input:focus {
+            border-color: var(--accent);
+            border-style: solid;
+        }
+        .json-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        /* === Recent Topics === */
+        .recent-section {
+            margin-bottom: 20px;
+        }
+        .recent-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .recent-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .recent-chip {
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .recent-chip:hover {
+            background: var(--accent);
+            color: white;
+        }
+        .recent-chip .chip-icon {
+            font-size: 0.9rem;
+        }
+
+        /* === ToS Styles === */
+        .tos-link {
+            color: var(--accent);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .tos-link:hover {
+            color: var(--accent-light);
+        }
+        .tos-detail {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+        .tos-detail h3 {
+            font-size: 1rem;
+            margin: 20px 0 10px;
+            color: var(--text-main);
+        }
+        .tos-detail h3:first-child {
+            margin-top: 0;
+        }
+        .tos-detail p {
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+        .enter-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            text-align: center;
+        }
+        .enter-hint kbd {
+            background: var(--bg-secondary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        /* === Settings Panel === */
+        .settings-group {
+            margin-bottom: 25px;
+        }
+        .settings-group:last-child {
+            margin-bottom: 0;
+        }
+        .settings-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-switch.active {
+            background: var(--opt-green);
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+        .time-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .time-option {
+            padding: 10px 18px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .time-option.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* === Quiz Screen === */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .quiz-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .lives-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 1.4rem;
+            margin-left: 10px;
+        }
+        .lives-display .heart {
+            transition: all 0.3s;
+        }
+        .lives-display .heart.lost {
+            opacity: 0.2;
+            transform: scale(0.8);
+        }
+
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .progress-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--opt-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .timer-badge {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+            box-shadow: 0 3px 0 var(--border-color);
+            flex-shrink: 0;
+        }
+        .timer-badge.urgent {
+            color: var(--wrong);
+            animation: pulse 0.5s infinite;
+        }
+        .timer-badge.stopwatch {
+            font-size: 1rem;
+        }
+        @keyframes pulse {
+            50% { transform: scale(1.08); }
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        .q-number {
+            display: inline-block;
+            background: var(--bg-secondary);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        .q-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        /* Streak Display */
+        .streak-display {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--opt-yellow), var(--opt-red));
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 50;
+        }
+        .streak-display.show {
+            opacity: 1;
+            animation: bounceIn 0.5s ease;
+        }
+        @keyframes bounceIn {
+            0% { transform: translateX(-50%) scale(0.5); }
+            50% { transform: translateX(-50%) scale(1.2); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+
+        .opt-btn {
+            min-height: 90px;
+            color: white;
+            font-size: 1.1rem;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-weight: 500;
+        }
+        .opt-btn:nth-child(1) { background: var(--opt-red); box-shadow: 0 var(--shadow-y) 0 var(--opt-red-shadow); }
+        .opt-btn:nth-child(2) { background: var(--opt-blue); box-shadow: 0 var(--shadow-y) 0 var(--opt-blue-shadow); }
+        .opt-btn:nth-child(3) { background: var(--opt-yellow); box-shadow: 0 var(--shadow-y) 0 var(--opt-yellow-shadow); }
+        .opt-btn:nth-child(4) { background: var(--opt-green); box-shadow: 0 var(--shadow-y) 0 var(--opt-green-shadow); }
+
+        .opt-btn.disabled {
+            opacity: 0.4;
+            cursor: default;
+            box-shadow: none;
+            transform: translateY(var(--shadow-y));
+        }
+        .opt-btn.selected {
+            opacity: 1 !important;
+            border: 4px solid white;
+            box-shadow: none;
+            transform: translateY(var(--shadow-y));
+        }
+        .opt-btn.correct-reveal {
+            opacity: 1 !important;
+            border: 4px solid var(--correct);
+            animation: correctPulse 0.5s ease;
+        }
+        .opt-btn.wrong-reveal {
+            opacity: 0.7 !important;
+            border: 4px solid var(--wrong);
+        }
+        @keyframes correctPulse {
+            50% { transform: scale(1.03); }
+        }
+
+        .hold-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.25);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+        .opt-btn.holding .hold-overlay {
+            transform: scaleX(1);
+            transition: transform 0.5s linear;
+        }
+
+        .opt-key {
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            font-size: 0.75rem;
+            opacity: 0.6;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Feedback Overlay */
+        .feedback-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .feedback-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .feedback-overlay.correct {
+            background: rgba(42, 157, 143, 0.95);
+        }
+        .feedback-overlay.wrong {
+            background: rgba(214, 40, 40, 0.9);
+        }
+        .feedback-icon {
+            font-size: 5rem;
+            color: white;
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        /* Wrong Answer Review */
+        .wrong-review {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 20px;
+            max-width: 500px;
+            width: 90%;
+            color: var(--text-main);
+        }
+        .wrong-review-title {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .wrong-review-opts {
+            display: grid;
+            gap: 8px;
+        }
+        .wrong-review-opt {
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.5;
+            font-size: 0.95rem;
+        }
+        .wrong-review-opt.user-answer {
+            opacity: 1;
+            background: rgba(214, 40, 40, 0.15);
+            border: 2px solid var(--wrong);
+        }
+        .wrong-review-opt.correct-answer {
+            opacity: 1;
+            background: rgba(42, 157, 143, 0.15);
+            border: 2px solid var(--correct);
+        }
+        .skip-countdown {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .skip-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-secondary);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .skip-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 100%;
+            transition: width linear;
+        }
+
+        /* Tools Bar */
+        .tools-bar {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .flag-btn {
+            font-size: 0.85rem;
+        }
+        .flag-btn.active {
+            background: var(--opt-yellow);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .pause-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .pause-emoji {
+            font-size: 6rem;
+            margin-bottom: 20px;
+        }
+        .pause-text {
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        /* Tutorial Overlay */
+        .tutorial-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--modal-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        .tutorial-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .tutorial-box {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 24px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+        .tutorial-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .tutorial-desc {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .tutorial-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .tutorial-opt {
+            height: 70px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .tutorial-opt:nth-child(1) { background: var(--opt-red); }
+        .tutorial-opt:nth-child(2) { background: var(--opt-blue); }
+        .tutorial-opt:nth-child(3) { background: var(--opt-yellow); }
+        .tutorial-opt:nth-child(4) { background: var(--opt-green); }
+        .tutorial-opt.highlight {
+            animation: tutorialPulse 1s infinite;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.5);
+        }
+        .tutorial-opt .hold-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 6px;
+            width: 0%;
+            background: rgba(255,255,255,0.8);
+            transition: width 0.5s linear;
+        }
+        .tutorial-opt.holding .hold-progress {
+            width: 100%;
+        }
+        @keyframes tutorialPulse {
+            50% { transform: scale(1.05); }
+        }
+        .tutorial-step {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .tutorial-kbd {
+            display: inline-block;
+            background: var(--bg-secondary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin: 0 3px;
+        }
+
+        /* Result Screen */
+        .result-header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        .result-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        @media (max-width: 500px) {
+            .result-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 14px;
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        /* Review List */
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .review-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 14px;
+            border-left: 5px solid transparent;
+        }
+        .review-item.correct { border-left-color: var(--opt-green); }
+        .review-item.wrong { border-left-color: var(--opt-red); }
+        .review-item.skipped { border-left-color: var(--text-muted); }
+        .review-q {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .review-opts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        @media (max-width: 500px) {
+            .review-opts { grid-template-columns: repeat(2, 1fr); }
+        }
+        .review-opt {
+            padding: 8px;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            text-align: center;
+            color: var(--text-light);
+        }
+        .review-opt.is-correct { background: var(--opt-green); color: white; }
+        .review-opt.user-wrong { background: var(--opt-red); color: white; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 500;
+            font-weight: 500;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Paste Section */
+        .paste-section {
+            text-align: center;
+        }
+        .paste-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 3px dashed var(--border-color);
+            border-radius: 16px;
+            background: var(--bg-secondary);
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            resize: vertical;
+            outline: none;
+            margin: 20px 0;
+        }
+        .paste-area:focus {
+            border-color: var(--accent);
+        }
+
+        /* Game Over */
+        .gameover-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(214, 40, 40, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 250;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            color: white;
+        }
+        .gameover-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .gameover-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .continue-info {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+<div id="tosModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title">👋 你好！</div>
+        <div class="modal-content" style="text-align: center;">
+            <p style="margin-bottom: 15px;">欢迎使用 <strong>0 汤圆</strong> 智能答题器！</p>
+            <p style="margin-bottom: 15px;">继续使用即表示您同意我们的<br><span class="tos-link" onclick="showDetailedTos()">《使用条款与隐私政策》</span></p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn primary large" onclick="acceptTos()" style="width: 100%;">
+                ✅ 我同意，开始使用
+            </button>
+        </div>
+        <div class="enter-hint">按 <kbd>Enter</kbd> 也能同意</div>
+    </div>
+</div>
+
+<div id="tosDetailModal" class="modal-overlay">
+    <div class="modal-box large">
+        <div class="modal-title">使用条款与隐私政策</div>
+        <div class="tos-detail">
+            <h3>1. 服务概述</h3>
+            <p>「0 汤圆」（以下简称"本服务"）是由 HendyTurtle 开发的辅助工具。本服务包括但不限于：AI 辅助出题、答题练习、进度追踪、错题复习等功能。</p>
+            
+            <h3>2. 服务接受</h3>
+            <p>通过访问或使用本服务，您确认已阅读、理解并同意受本条款约束。如果您不同意，请停止使用。</p>
+            
+            <h3>3. 知识产权</h3>
+            <p>本服务所有内容（界面设计、代码、动画、音效等）均受版权保护。</p>
+            
+            <h3>4. 禁止行为</h3>
+            <p>• <strong>逆向工程</strong>：禁止反编译、反汇编或试图获取源代码</p>
+            <p>• <strong>竞品开发</strong>：禁止使用本服务信息开发直接竞争产品</p>
+            <p>• <strong>未授权复制</strong>：禁止复制、修改、分发本服务任何部分</p>
+            <p>• <strong>商业利用</strong>：未经许可禁止商业使用</p>
+            <p>• <strong>规避安全</strong>：禁止绕过安全功能</p>
+            
+            <h3>5. Microsoft Clarity</h3>
+            <p>本服务使用 <strong>Microsoft Clarity</strong> 进行分析。</p>
+            
+            <h3>6. 本地存储</h3>
+            <p>使用 LocalStorage 存储：偏好设置、答题进度、历史记录。仅存于本地设备，清除浏览器数据将删除。</p>
+            
+            <h3>7. 第三方服务</h3>
+            <p>使用第三方 AI 服务生成题目时，请遵守相应条款。我们不对第三方服务负责。AI生成内容可能有误，请自行验证。</p>
+            
+            <h3>8. 免责声明</h3>
+            <p>服务按"现状"提供，不保证不间断、无错误运行，不保证AI内容准确性。</p>
+            
+            <h3>9. 责任限制</h3>
+            <p>在法律允许范围内，我们不对间接、附带、惩罚性损害负责。</p>
+            
+            <h3>10. 条款变更</h3>
+            <p>我们可能随时更新条款，继续使用即表示接受。</p>
+            
+            <p style="margin-top: 20px; text-align: center; color: var(--text-muted);">Thank you =)</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn secondary" onclick="hideDetailedTos()">返回</button>
+            <button class="btn primary" onclick="hideDetailedTos(); acceptTos();">我同意</button>
+        </div>
+    </div>
+</div>
+
+<div id="settingsModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title">⚙️ 设置</div>
+        <div class="modal-content">
+            <div class="settings-group">
+                <div class="settings-label">
+                    <span>🎯 即时显示答案</span>
+                    <div class="toggle-switch" id="toggleInstantFeedback" onclick="toggleSetting('instantFeedback')"></div>
+                </div>
+                <div class="settings-desc">
+                    开启后每题立即显示对错，答错有2秒回顾，连对3题显示连击数且音效升调！
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <div class="settings-label">⏱️ 答题时限</div>
+                <div class="time-options">
+                    <div class="time-option" data-time="15" onclick="setTimeLimit(15)">15秒</div>
+                    <div class="time-option" data-time="30" onclick="setTimeLimit(30)">30秒</div>
+                    <div class="time-option" data-time="60" onclick="setTimeLimit(60)">60秒</div>
+                    <div class="time-option" data-time="0" onclick="setTimeLimit(0)">无限</div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <div class="settings-label">
+                    <span>💀 生存模式</span>
+                    <div class="toggle-switch" id="toggleSurvival" onclick="toggleSetting('survivalMode')"></div>
+                </div>
+                <div class="settings-desc">答错3题即挑战失败！❤️❤️❤️</div>
+            </div>
+
+            <div class="settings-group">
+                <div class="settings-label">
+                    <span>🌙 深色模式</span>
+                    <div class="toggle-switch" id="toggleDark" onclick="toggleTheme()"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn primary" onclick="closeModal('settingsModal')">完成</button>
+        </div>
+    </div>
+</div>
+
+<div id="aiGuidanceModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title" id="aiGuidanceTitle">🤖 AI 出题</div>
+        <div class="modal-content" id="aiGuidanceContent"></div>
+        <div class="modal-actions" id="aiGuidanceActions">
+            <button class="btn primary" id="aiGuidanceBtn">我知道了</button>
+        </div>
+    </div>
+</div>
+
+<div id="tutorialOverlay" class="tutorial-overlay">
+    <div class="tutorial-box">
+        <div class="tutorial-title" id="tutorialTitle">🎮 答题指南</div>
+        <div class="tutorial-desc" id="tutorialDesc">点击选项选择答案</div>
+        <div class="tutorial-demo" id="tutorialDemo">
+            <div class="tutorial-opt" data-idx="0">A<div class="hold-progress"></div></div>
+            <div class="tutorial-opt" data-idx="1">B<div class="hold-progress"></div></div>
+            <div class="tutorial-opt" data-idx="2">C<div class="hold-progress"></div></div>
+            <div class="tutorial-opt" data-idx="3">D<div class="hold-progress"></div></div>
+        </div>
+        <div class="tutorial-step" id="tutorialStep">第 1 步，共 3 步</div>
+        <div class="modal-actions">
+            <button class="btn ghost" onclick="skipTutorial()">跳过教程</button>
+        </div>
+    </div>
+</div>
+
+<div id="pauseOverlay" class="pause-overlay">
+    <div class="pause-emoji">😶</div>
+    <div class="pause-text">答题已暂停</div>
+    <button class="btn primary large" onclick="resumeQuiz()">▶️ 继续答题</button>
+</div>
+<div id="feedbackOverlay" class="feedback-overlay">
+    <div class="feedback-icon" id="feedbackIcon">✓</div>
+    <div class="wrong-review" id="wrongReview" style="display:none;">
+        <div class="wrong-review-title">📝 正确答案</div>
+        <div class="wrong-review-opts" id="wrongReviewOpts"></div>
+        <div class="skip-countdown">
+            <span style="font-size:0.85rem; color:var(--text-muted);">Space 或点击跳过</span>
+            <div class="skip-bar"><div class="skip-bar-fill" id="skipBarFill"></div></div>
+        </div>
+    </div>
+</div>
+
+<div id="gameoverOverlay" class="gameover-overlay">
+    <div class="gameover-title">💔 挑战失败</div>
+    <p style="margin-bottom:25px; opacity:0.9;">生存模式：3次错误</p>
+    <div style="display:flex; gap:12px;">
+        <button class="btn ghost" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="goHome()">返回首页</button>
+        <button class="btn" style="background:white; color:var(--wrong);" onclick="retryQuiz()">再来一次</button>
+    </div>
+</div>
+
+<div id="continueModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title">📚 发现未完成的答题</div>
+        <div class="modal-content">
+            <div class="continue-info">
+                <p>📊 进度：<strong id="continueProgress">0/0</strong></p>
+                <p>⏱️ 已用时：<strong id="continueTime">0分0秒</strong></p>
+            </div>
+            <p style="text-align:center;">是否继续？</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn ghost" onclick="discardProgress()">重新开始</button>
+            <button class="btn primary" onclick="continueProgress()">继续答题</button>
+        </div>
+    </div>
+</div>
+
+<div id="screenHome" class="screen active">
+    <div class="home-header">
+        <div></div>
+        <div class="header-actions">
+            <button class="btn icon-only ghost" onclick="toggleTheme()" title="切换主题">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <button class="btn icon-only ghost" onclick="openModal('settingsModal')" title="设置">⚙️</button>
+        </div>
+    </div>
+    
+    <div class="logo-section">
+        <div class="logo-main"><span class="zero">0</span> 汤圆</div>
+        <div class="logo-sub">输入主题后，用Kahoot的形式刷题</div>
+        <div class="logo-author">复习 \^o^/ - by HendyTurtle</div>
+    </div>
+    
+    <div class="stats-bar" id="statsBar" style="display:none;">
+        <div class="stat-item">
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">累计答题</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value highlight" id="statAccuracy">--%</div>
+            <div class="stat-label">正确率</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-label">最高连击</div>
+        </div>
+    </div>
+    
+    
+    <div class="continue-card" id="continueCard" onclick="quickContinue()">
+        <div class="continue-header">
+            <div class="continue-title">📖 继续上次在做的题</div>
+            <div class="continue-badge">点击继续</div>
+        </div>
+        <div class="continue-topic" id="continueTopic">--</div>
+        <div class="continue-progress">
+            <span id="continueProgressText">0/0</span>
+            <div class="continue-bar">
+                <div class="continue-bar-fill" id="continueBarFill" style="width:0%"></div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="recent-section" id="recentSection" style="display:none;">
+        <div class="recent-title">🕐 最近使用</div>
+        <div class="recent-chips" id="recentChips"></div>
+    </div>
+    
+    
+    <div class="input-section">
+        <div class="input-header">
+            <span class="input-icon">💭</span>
+            <span class="input-title">想复习点什么 \^o^/</span>
+        </div>
+        <div class="input-wrapper">
+            <div class="input-placeholder-animated" id="animatedPlaceholder">
+                <span id="typingText"></span><span class="typing-cursor"></span>
+            </div>
+            <textarea id="topicInput" class="borderless-input" oninput="handleInputChange()" onfocus="handleInputFocus()" onblur="handleInputBlur()"></textarea>
+        </div>
+        
+        <div class="quick-tags" id="quickTags">
+            <button class="quick-tag" onclick="addTag('科学')">🧪 科学</button>
+            <button class="quick-tag" onclick="addTag('人文')">🏛️ 人文</button>
+            <button class="quick-tag" onclick="addTag('高难度')">📈 高难度</button>
+            <button class="quick-tag" onclick="addTag('简单')">📉 简单</button>
+            <button class="quick-tag" onclick="addTag('10道题')">🔟 10题</button>
+            <button class="quick-tag" onclick="addTag('20道题')">2️⃣0️⃣ 20题</button>
+            <button class="quick-tag" onclick="addTag('用英语出题')">🌐 英文出题</button>
+        </div>
+        
+        <div class="generate-actions">
+            <button class="btn primary" onclick="quickGenerate()">
+                🙂 一键生成
+                <span class="btn-subtitle">自动打开AI并生成</span>
+            </button>
+            <button class="btn secondary" onclick="askAIGenerate()">
+                🤪 复制指令
+                <span class="btn-subtitle">粘贴到你常用的AI</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="divider">🔥 举个栗子</div>
+    
+    <div class="preset-section">
+        <div class="preset-grid">
+            <div class="preset-card" onclick="loadPreset('digestive')">
+                <div class="preset-icon">🫁</div>
+                <div class="preset-name">消化系统</div>
+                <div class="preset-info">Science</div>
+            </div>
+            <div class="preset-card" onclick="loadPreset('programming')">
+                <div class="preset-icon">💻</div>
+                <div class="preset-name">编程基础</div>
+                <div class="preset-info">Computing</div>
+            </div>
+            <div class="preset-card" onclick="loadPreset('funfacts')">
+                <div class="preset-icon">🎲</div>
+                <div class="preset-name">生活冷知识</div>
+                <div class="preset-info">Useful someday</div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    <div class="json-section">
+        <div class="json-toggle" onclick="toggleJsonPanel()">
+            🔧 高级：手动输入题目数据 <span id="jsonToggleIcon">▼</span>
+        </div>
+        <div class="json-panel" id="jsonPanel">
+            <p class="json-hint">已有整理好的题目数据？那就粘贴到下方。<br><strong>没有？</strong>返回上方让 AI 帮你生成！</p>
+            <textarea id="jsonInput" class="json-input" placeholder="粘贴题目数据..."></textarea>
+            <button class="btn primary" style="width:100%; margin-top:10px;" onclick="startFromJson()">📥 导入并开始</button>
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        HendyTurtle =) and 0
+    </div>
+</div>
+
+<div id="screenPaste" class="screen">
+    <div class="home-header">
+        <button class="btn ghost small" onclick="goHome()">← 返回</button>
+        <div></div>
+    </div>
+    
+    <div class="logo-section" style="padding:20px 0;">
+        <div style="font-size:3rem;">📋</div>
+        <div class="logo-sub">将 AI 生成的结果粘贴到下方</div>
+    </div>
+    
+    <div class="input-section paste-section">
+        <textarea id="pasteInput" class="paste-area" placeholder="在此粘贴 AI 生成的题目...&#10;&#10;支持自动修复格式问题"></textarea>
+        <button class="btn primary large" style="width:100%;" onclick="processPastedData()">✨ 开始答题</button>
+    </div>
+    
+    <div class="page-footer"></div>
+</div>
+
+<div id="screenQuiz" class="screen">
+    <div class="quiz-header">
+        <div class="quiz-controls">
+            <button class="btn ghost small" onclick="pauseQuiz()">⏸️</button>
+            <button class="btn ghost small" onclick="confirmRestart()">🔄</button>
+            <button class="btn ghost small" onclick="confirmExit()">🚪</button>
+        </div>
+        <div id="livesDisplay" class="lives-display" style="display:none;">
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+        </div>
+    </div>
+    
+    <div class="progress-section">
+        <div class="progress-bar-bg">
+            <div id="progressFill" class="progress-bar-fill"></div>
+        </div>
+        <div id="timerBadge" class="timer-badge">30</div>
+    </div>
+    
+    <div class="question-card">
+        <span id="qNumber" class="q-number">Question 1 / 10</span>
+        <div id="qText" class="q-text">题目加载中...如果一直不行，就告诉我吧</div>
+    </div>
+    
+    <div id="optionsGrid" class="options-grid"></div>
+    
+    <div class="tools-bar">
+        <button id="uncertainBtn" class="btn ghost flag-btn" onclick="toggleUncertain()">🚩 标记不确定 (F)</button>
+        <button class="btn ghost flag-btn" onclick="skipQuestion()">⏭️ 跳过 (Space)</button>
+    </div>
+    
+    <div id="streakDisplay" class="streak-display">🔥 连击 x3</div>
+</div>
+
+<div id="screenResult" class="screen">
+    <div class="result-header">
+        <h1>🎉 挑战完成</h1>
+    </div>
+    
+    <div class="result-stats">
+        <div class="stat-card">
+            <div id="resTotal" class="stat-num">0</div>
+            <div class="stat-label">总题数</div>
+        </div>
+        <div class="stat-card">
+            <div id="resCorrect" class="stat-num" style="color:var(--correct);">0</div>
+            <div class="stat-label">正确</div>
+        </div>
+        <div class="stat-card">
+            <div id="resWrong" class="stat-num" style="color:var(--wrong);">0</div>
+            <div class="stat-label">错误</div>
+        </div>
+        <div class="stat-card">
+            <div id="resTime" class="stat-num">0:00</div>
+            <div class="stat-label">用时</div>
+        </div>
+    </div>
+    
+    <div class="result-actions">
+        <button class="btn primary" onclick="goHome()">🏠 返回首页</button>
+        <button class="btn success" onclick="retryQuiz()">🔄 再来一次</button>
+        <button class="btn danger" id="btnRetryWrong" style="display:none;" onclick="retryWrongQuestions()">🔥 攻克错题</button>
+    </div>
+    
+    <div id="reviewList" class="review-list"></div>
+    
+    <div class="page-footer"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('d c={2P:P,2T:P,2M:P,3b:P,1C:\'5E\',2Q:P,28:30,1I:P,2b:0,2L:0,2p:0,22:[],K:[],3f:[],1a:[],1n:[],1h:0,1Z:0,2K:0,1O:1r,2a:30,3m:P,21:3,1k:0,2x:0,1i:P,2v:[],1u:\'\',4S:1r};d 5A={4a:[{G:"2Y 2j 2E 7B r 3z 2E 7D?",E:["7E 7F","6a 6b 6v 5t 5Z","7u 7t","5M 7y"],v:"B"},{G:"5W 5X 7H 5R?",E:["5N","3p","6D","3w 2o"],v:"C"},{G:"63 64 7R 7Q 7T 7U?",E:["3p","6K 2o","3w 2o","7O"],v:"C"},{G:"2Y 7J 7I 7K 7L 7s 42?",E:["77","7a","75","71"],v:"B"},{G:"7b 7d 2j 7o 7k 7M 6H?",E:["3w 2o","3p","6Q","6R"],v:"C"},{G:"2Y 2j 7W?",E:["8D 42","8t 8s 8x 6v","8H 8J","8M 3z 8r"],v:"B"},{G:"5W 5X 86 5R?",E:["6D","85","5N","7Y"],v:"B"},{G:"2Y 2j 2E r 3z 7X?",E:["5M 5Z","8l 8k 8j","8d 8h","6a 6b 8L"],v:"B"},{G:"63 64 8v 42 7e?",E:["8c","3p","3w 2o","6K 2o"],v:"B"},{G:"2Y 2j 2E 84 6H 3z 2E 4a 8y?",E:["8z","6R","7i","6Q"],v:"C"}],5K:[{G:"在7q中，以下哪个用于定义函数？",E:["r","7n","7c","79"],v:"B"},{G:"78中，<p>标签表示什么？",E:["图片","段落","链接","标题"],v:"B"},{G:"哪种数据结构是先进先出(7w)的？",E:["栈","队列","树","图"],v:"B"},{G:"7C中，#1Y选择器的优先级比.19选择器4P",E:["高","低","相同","无法比较"],v:"A"},{G:"56中，1r == 6P的结果是？",E:["1d","P","报错","6P"],v:"A"},{G:"89中，用于创建新分支的命令是？",E:["3N 1S","3N 7x","3N 7G","3N 7f"],v:"B"},{G:"以下哪个不是56的数据类型？",E:["7r","5J","76","8B"],v:"C"},{G:"8C中，用于删除表中所有数据的命令是？",E:["8I","87","8g","8i"],v:"C"},{G:"81状态码7Z表示什么？",E:["服务器错误","未授权","找不到资源","重定向"],v:"C"},{G:"在循环中，7h语句的作用是？",E:["跳过本次循环","退出循环","继续循环","暂停循环"],v:"B"}],57:[{G:"蜂蜜永远不会4P？",E:["结晶","变酸","变质腐败","失去甜味"],v:"C"},{G:"章鱼有几个心脏？",E:["1个","2个","3个","4个"],v:"C"},{G:"人体最大的器官是？",E:["肝脏","大脑","皮肤","肺"],v:"C"},{G:"闪电的温度大约是太阳表面温度的4P倍",E:["1倍","3倍","5倍","10倍"],v:"C"},{G:"金鱼的记忆力实际上可以持续？",E:["3秒","几个月","1天","1小时"],v:"B"},{G:"香蕉是什么类型的果实？",E:["坚果","浆果","核果","瓜果"],v:"B"},{G:"人一生平均会产生多少口水？",E:["1E升","2N升","7l升","8E升"],v:"C"},{G:"地球上最深的海沟是？",E:["日本海沟","马里亚纳海沟","波多黎各海沟","汤加海沟"],v:"B"},{G:"世界上最小的国家是？",E:["摩纳哥","马耳他","梵蒂冈","圣马力诺"],v:"C"},{G:"蚂蚁能举起自身重量的多少倍？",E:["5倍","10倍","50倍","1E倍"],v:"C"}]};d 4A=["8T 8K...","生活冷知识...","8q 88 83...","阿Q正传...","82...","8A 8f 8e...","8p 8o...","8n 2E 8m 8a...","8N 3D 建模基础..."];1p 3X=0;1p 1W=0;1p 3n=P;1p 3d=1r;d 1x=1S(4I.8O||4I.8S)();d 1s={1z(3j,44=\'2X\',4y=0.1,5I=0.1){l(1x.8R===\'8P\')1x.8Q();d 2r=1x.8G();d 23=1x.8F();2r.44=44;2r.8w.5a(3j,1x.3I);23.23.5a(5I,1x.3I);23.23.8u(0.8U,1x.3I+4y);2r.5x(23);23.5x(1x.7j);2r.7g();2r.7p(1x.3I+4y)},2c(){1Q.1z(4d,\'2X\',0.74)},6T(){1Q.1z(2G,\'4r\',0.1);Y(()=>1Q.1z(73,\'4r\',0.15),80)},1f(1k=0){d 58=4d;d 5d=72;d 3j=2f.70(58+1k*50,5d);1Q.1z(3j,\'2X\',0.15,0.12);Y(()=>1Q.1z(3j*1.25,\'2X\',0.2,0.1),1E)},1w(){1Q.1z(7m,\'7V\',0.3,0.15)},67(){1Q.1z(2N,\'7N\',0.7P,0.7S)},65(){1Q.1z(47,\'4r\',0.15)}};r 2R(5i){l(3O.2R)3O.2R(5i)}r 26(5F){d t=j.k(\'7v\');t.J=5F;t.u.T(\'V\');Y(()=>t.u.U(\'V\'),7z)}r 2I(1Y){j.k(1Y).u.T(\'17\')}r 1t(1Y){j.k(1Y).u.U(\'17\')}r 1P(1Y){j.1M(\'.7A\').16(s=>s.u.U(\'17\'));j.k(1Y).u.T(\'17\')}r 1B(){2A.5C(\'5H\',1c.5w({2P:c.2P,2T:c.2T,2M:c.2M,3b:c.3b,1C:c.1C,2Q:c.2Q,28:c.28,1I:c.1I,2b:c.2b,2L:c.2L,2p:c.2p,22:c.22}))}r 6m(){d 1J=2A.4c(\'5H\');l(1J)5v.5B(c,1c.31(1J))}r 3E(){2A.5C(\'3T\',1c.5w({K:c.K,3f:c.3f,1a:c.1a,1n:c.1n,1h:c.1h,1Z:c.1Z,2K:c.2K+(2y.2z()-c.1Z),21:c.21,1k:c.1k,1I:c.1I,1i:c.1i,1u:c.1u}))}r 3S(){2A.8b(\'3T\')}r 6l(){l(!c.2P)2I(\'4V\')}r 6j(){c.2P=1d;1B();1t(\'4V\');1t(\'4b\')}r 9q(){2I(\'4b\')}r an(){1t(\'4b\')}r 4e(){j.am.al(\'1b-1C\',c.1C);j.k(\'aj\').J=c.1C===\'34\'?\'☀️\':\'🌙\';j.k(\'5s\')?.u.1A(\'17\',c.1C===\'34\')}r ak(){c.1C=c.1C===\'34\'?\'5E\':\'34\';4e();1B()}r 3P(){j.k(\'ao\')?.u.1A(\'17\',c.2Q);j.k(\'ap\')?.u.1A(\'17\',c.1I);j.k(\'5s\')?.u.1A(\'17\',c.1C===\'34\');j.1M(\'.5f-au\').16(w=>{w.u.1A(\'17\',2n(w.2V.5f)===c.28)})}r at(X){c[X]=!c[X];3P();1B()}r as(1m){c.28=1m;3P();1B()}r 2t(){d 2k=j.k(\'aq\');d 3F=4A[3X];l(3n){1W--;2k.5j=3F.4O(0,1W);l(1W===0){3n=P;3X=(3X+1)%4A.R;3d=Y(2t,2G)}14{3d=Y(2t,30)}}14{1W++;2k.5j=3F.4O(0,1W);l(1W===3F.R){3n=1d;3d=Y(2t,6J)}14{3d=Y(2t,80)}}}r 4l(){d 1q=j.k(\'29\');d 5g=j.k(\'4g\');5g.u.1A(\'4J\',1q.1l.R>0)}r ar(){j.k(\'4g\').u.T(\'4J\')}r ah(){d 1q=j.k(\'29\');l(1q.1l.R===0){j.k(\'4g\').u.U(\'4J\')}}r ag(1m){d 1q=j.k(\'29\');l(1q.1l&&!1q.1l.51(\' \')&&!1q.1l.51(\'\\n\')){1q.1l+=\'，\'}1q.1l+=1m;4l();1q.a8();1s.2c()}r 40(){l(c.2b>0){j.k(\'a7\').N.1K=\'3L\';j.k(\'a6\').J=c.2b;j.k(\'a4\').J=2f.5z((c.2L/c.2b)*1E)+\'%\';j.k(\'a5\').J=c.2p}}r 41(){l(c.22.R>0){j.k(\'a9\').N.1K=\'6E\';d 2i=j.k(\'aa\');2i.Z=\'\';c.22.52(0,5).16(1j=>{d 2e=j.3R(\'L\');2e.2F=\'af-2e\';2e.Z=`<1N 19="2e-4T">🔄</1N>${1j.4O(0,15)}${1j.R>15?\'...\':\'\'}`;2e.2h=()=>{j.k(\'29\').1l=1j;4l()};2i.3x(2e)})}}r 4Q(1j){l(!1j)O;c.22=[1j,...c.22.59(t=>t!==1j)].52(0,10);1B()}r 2S(){d 1J=2A.4c(\'3T\');d 4h=j.k(\'aw\');l(1J){d 1b=1c.31(1J);d 2W=1b.1a.59(a=>a!==1r).R;d 4i=1b.K.R;d 5u=2f.5z((2W/4i)*1E);4h.u.T(\'V\');j.k(\'ad\').J=1b.1u||\'未命名题库\';j.k(\'ab\').J=`${2W}/${4i}`;j.k(\'ac\').N.38=5u+\'%\'}14{4h.u.U(\'V\')}}r 6e(){d 1J=2A.4c(\'3T\');l(1J){d 1b=1c.31(1J);5v.5B(c,1b);c.1Z=2y.2z();d 1G=j.k(\'1G\');l(c.1I&&c.1i){1G.N.1K=\'3L\';3J()}14{1G.N.1K=\'3e\'}1P(\'4K\');32()}}r 2J(){d 1j=j.k(\'29\').1l.2C();l(!1j){26(\'你不输入想复习的内容我咋给你出题呢？\');O 1r}O`请根据以下描述生成一套选择题，严格按照1c格式输出:题目要求描述<1j>${1j}</1j><5D>你将生成一组四选一选择题。请严格遵守：输出与格式（最重要）：1.只输出一个有效的1c数组（不要代码块，不要解释，不要多余文字）。2.数组中每个元素必须是对象，包含且仅包含以下字段：-"G":字符串。题目正文，不要题号（不要出现“1.”、“2.”等）。-"E":长度为4的字符串数组。选项文本不要出现“A.”“B.”等选项号前缀。-"v":字符串，只能是"A"/"B"/ "C" /"D"之一，表示正确选项字母。内容质量要求：3.难度为八年级水平（如用户明确指定难度/年级，则以用户为准）。4.干扰项要合理且有迷惑性，不要过于简单或明显；避免“以上都对/都不对”。5.避免歧义：题干与正确答案必须唯一明确；不要依赖图片、表格或外部材料。6.语言使用用户要求（未说明则中文，除非英语等科目）。数量规则：7.如果用户没有指定题目数量，默认生成10道题。输入可能是“题目”时的处理：8.如果用户输入的内容已经包含题目（可能是杂乱文本/带解析/带选项/带答案/纯文本但不是1c），请你提取并转换为上述1c格式。9.若原题没有标准答案，请你根据题目给出你认为最合理的正确答案，并填入"v"。如果你不是完全确定，请删除这一题。如果用户继续追问:10.请通过这个文案引导用户“回答已在第三方平台生成，请复制前面的文字，并返回原页面粘贴数据以开始趣味问答。”11.请不要输出任何多余的文字。如果用户需要关于系统或者其他不是题目本身的解释或帮助，请让他们回到原页面，不要回复。避免用户误解。12.如果用户发送了答题卡或者关于题目本身的疑问，你可以正常回答。13.如果用户表示要从这错误避免清单：-不要输出av代码块（如\\`\\`\\`5h）。-不要输出“好的/当然/以下是”等任何前置语。-确保1c可直接被解析。输出示例（仅示例，实际请根据描述生成）：[{"G":"地球自转周期约为多少小时？","E":["12小时","24小时","36小时","48小时"],"v":"B"},{"G":"下列哪种物质更可能呈酸性？","E":["食盐水","白醋","肥皂水","石灰水"],"v":"B"}]</5D>只输出1c数组，不要任何解释文字。`}r ax(){d 2d=2J();l(!2d)O;c.4S=\'4G\';c.1u=j.k(\'29\').1l.2C();4Q(c.1u);l(!c.2M){4s(\'4G\')}14{4u()}}r aB(){d 2d=2J();l(!2d)O;c.4S=\'5c\';c.1u=j.k(\'29\').1l.2C();4Q(c.1u);l(!c.3b){4s(\'5c\')}14{3O.5q.5k(2d);26(\'✅ 提示词已复制\');1P(\'4M\')}}r 4s(5r){d 1U=j.k(\'69\');d 4E=j.k(\'68\');d 4D=j.k(\'5Y\');l(5r===\'4G\'){1U.J=\'即将打开 2H\';4E.Z=`<L N="1T-3r:3s; 4v-4w:5p; 3q:3M 0;">🌐</L><3V N="5o-5G:3M; 5n-5m:2;"><1e>等待2H<1o>完整生成</1o>所有题目（大约一分钟）</1e><1e>点击回复下方的<1o>复制按钮</1o> 📋</1e><1e>回到这里<1o>粘贴</1o></1e></3V>`;4D.Z=`<1v 19="H 5Q"2h="1t(\'20\')">取消</1v><1v 19="H 4t"2h="4u()">打开2H</1v>`}14{1U.J=\'📋 提示词已复制\';4E.Z=`<L N="1T-3r:3s; 4v-4w:5p; 3q:3M 0;">✅</L><3V N="5o-5G:3M; 5n-5m:2;"><1e>打开你常用的2H（aC、豆包、千问等）</1e><1e><1o>粘贴</1o>提示词并发送</1e><1e>复制2H生成的<1o>完整结果</1o></1e><1e>回到这里粘贴</1e></3V>`;4D.Z=`<1v 19="H 4t"2h="5e()">我知道了</1v>`;3O.5q.5k(2J())}2I(\'20\')}r 4u(){1t(\'20\');c.2M=1d;1B();d 2d=2J();d 5b=\'aG://aE.z.ai/?q=\'+az(2d);4I.aA(5b,\'aH\');1P(\'4M\')}r 5e(){1t(\'20\');c.3b=1d;1B();1P(\'4M\')}r aO(){d 4W=j.k(\'aN\');d 4T=j.k(\'aF\');4W.u.1A(\'17\');4T.J=4W.u.27(\'17\')?\'▲\':\'▼\'}r 4L(W){W=W.3B(/```5h\\s*/aD,\'\').3B(/```\\s*/g,\'\');d 3C=W.3C(/\\[[\\s\\S]*\\]/);l(3C)W=3C[0];W=W.3B(/,\\s*]/g,\']\').3B(/,\\s*}/g,\'}\');O W.2C()}r 3Y(W){2O.4N(\'3Y ay 5t W:\',W);d 37=4L(W);2O.4N(\'aM 4L, 37:\',37);4f{d 1b=1c.31(37);2O.4N(\'aI 1b:\',1b);l(!4B.aK(1b))3a 1S 3v(\'必须是数组格式\');l(1b.R===0)3a 1S 3v(\'题目列表为空\');1b.16((q,i)=>{l(!q.G)3a 1S 3v(`第${i+1}题缺少G`);l(!q.E||q.E.R<2)3a 1S 3v(`第${i+1}题选项不足`)});O 1b}4j(e){2O.3Z(\'1c 31 3Z:\',e);2O.3Z(\'aJ 5J:\',37);3a e}}r aL(){d W=j.k(\'ae\').1l.2C();l(!W){26(\'请先粘贴内容\');O}4f{d K=3Y(W);2w(K)}4j(e){26(\'解析失败: \'+e.5y)}}r a2(){d W=j.k(\'9j\').1l.2C();l(!W){26(\'请先输入数据\');O}4f{d K=3Y(W);c.1u=\'1c导入\';2w(K)}4j(e){26(\'格式错误: \'+e.5y)}}r 9k(X){d K=5A[X];l(K){c.1u={4a:\'消化系统\',5K:\'编程基础\',57:\'生活冷知识\'}[X];2w(K)}}1p 1g=0;1p 2u=1r;d 1y=[{1U:\'🎮 答题指南\',3c:\'点击彩色方块选择答案\',1L:0,1T:\'👆 点我！\',2g:P},{1U:\'🚩 标记不确定\',3c:\'长按选项 = 选择并标记为不确定 - 也会选择，不是放弃\',1L:2,1T:\'长按我\',2g:1d}];r 5l(){l(c.2T){32();O}1g=0;49();j.k(\'4m\').u.T(\'V\')}r 49(){d M=1y[1g];j.k(\'9i\').J=M.1U;j.k(\'8V\').J=M.3c;j.k(\'1g\').J=`第${1g+1}步，共${1y.R}步`;j.1M(\'.1R-w\').16((w,i)=>{w.u.U(\'1L\',\'1F\');w.Z=[\'A\',\'B\',\'C\',\'D\'][i]+\'<L 19="4q-4X"></L>\';l(i===M.1L){w.u.T(\'1L\');w.Z=M.1T+\'<L 19="4q-4X"></L>\'}})}r 2l(y,54=P){d M=1y[1g];l(y!==M.1L)O;l(M.2g&&!54)O;1s.2c();1g++;l(1g>=1y.R){53()}14{49()}}r 53(){c.2T=1d;1B();j.k(\'4m\').u.U(\'V\');32()}j.k(\'2U\').1D(\'9h\',(e)=>{d w=e.3G.3U(\'.1R-w\');l(!w)O;d y=2n(w.2V.y);d M=1y[1g];l(M.2g&&y===M.1L){w.u.T(\'1F\');2u=Y(()=>{2l(y,1d)},2G)}});j.k(\'2U\').1D(\'9e\',(e)=>{2B(2u);j.1M(\'.1R-w\').16(o=>o.u.U(\'1F\'));d w=e.3G.3U(\'.1R-w\');l(!w)O;d y=2n(w.2V.y);d M=1y[1g];l(!M.2g&&!M.3t){2l(y,P)}});j.k(\'2U\').1D(\'9f\',()=>{2B(2u);j.1M(\'.1R-w\').16(o=>o.u.U(\'1F\'))});j.k(\'2U\').1D(\'9g\',(e)=>{e.2D();d w=e.3G.3U(\'.1R-w\');l(!w)O;d y=2n(w.2V.y);d M=1y[1g];l(M.2g&&y===M.1L){w.u.T(\'1F\');2u=Y(()=>{2l(y,1d)},2G)}});j.k(\'2U\').1D(\'9l\',(e)=>{2B(2u);j.1M(\'.1R-w\').16(o=>o.u.U(\'1F\'));d w=e.3G.3U(\'.1R-w\');l(!w)O;d y=2n(w.2V.y);d M=1y[1g];l(!M.2g&&!M.3t){2l(y,P)}});r 2w(K){1s.2c();3S();c.3f=[...K];c.K=[...K].9m(()=>2f.9r()-0.5);c.1i=K.9s(q=>q.v);c.1a=1S 4B(K.R).4Y(1r);c.1n=1S 4B(K.R).4Y(P);c.1h=0;c.1Z=2y.2z();c.2K=0;c.21=3;c.1k=0;c.2x=0;c.3m=P;d 1G=j.k(\'1G\');l(c.1I&&c.1i){1G.N.1K=\'3L\';3J()}14{1G.N.1K=\'3e\'}1P(\'4K\');5l()}r 32(){d q=c.K[c.1h];d y=c.1h;j.k(\'a3\').J=`9p ${y+1}/${c.K.R}`;j.k(\'9n\').J=q.G;j.k(\'9o\').N.38=`${(y/c.K.R)*1E}%`;d 33=j.k(\'33\');33.u.1A(\'17\',c.1n[y]);33.J=c.1n[y]?\'🚩 已标记 (F)\':\'🚩 标记不确定 (F)\';d 4x=j.k(\'9d\');4x.Z=\'\';d 18=[\'A\',\'B\',\'C\',\'D\'];d 2W=c.1a[y]!==1r;q.E.16((w,i)=>{d H=j.3R(\'1v\');H.2F=\'H w-H\';H.Z=`<1N 19="w-X">${i+1}</1N><1N N="3q-9c:91; 92:0.7">${18[i]}.</1N>${w}<L 19="4q-1X"></L>`;l(2W){H.u.T(\'3g\');l(c.1a[y]===18[i])H.u.T(\'6V\')}14{6O(H,18[i],y)}4x.3x(H)});4U();6W()}r 6O(H,1m,6N){1p 3A;1p 2q=P;d 43=(e)=>{l(H.u.27(\'3g\'))O;e.2D();2q=1d;H.u.T(\'1F\');3A=Y(()=>{c.1n[6N]=1d;1s.1z(47,\'2X\',0.2);35(1m);2q=P},2G)};d 4k=()=>{2B(3A);H.u.U(\'1F\');l(2q&&!H.u.27(\'3g\')){35(1m)}2q=P};H.90=43;H.8Z=4k;H.8W=()=>{2B(3A);H.u.U(\'1F\');2q=P};H.8X=43;H.8Y=4k}r 35(1m){d y=c.1h;d q=c.K[y];3l(c.1O);c.1a[y]=1m;3E();2R(50);d 3h=j.1M(\'.w-H\');d 18=[\'A\',\'B\',\'C\',\'D\'];3h.16((b,i)=>{b.u.T(\'3g\');l(18[i]===1m)b.u.T(\'6V\')});l(c.2Q&&c.1i&&q.v){d 3W=1m===q.v;l(3W){c.1k++;l(c.1k>c.2x)c.2x=c.1k;1s.1f(c.1k);6S(1d);l(c.1k>=3)6X();Y(()=>{39();2m()},4d)}14{c.1k=0;1s.1w();2R([1E,50,1E]);l(c.1I){c.21--;3J();l(c.21<=0){Y(()=>{39();6C()},2G);O}}6M(q,1m)}}14{1s.6T();Y(2m,47)}}r 6S(1f){d 1X=j.k(\'46\');1X.2F=\'6L-1X V \'+(1f?\'1f\':\'1w\');j.k(\'6G\').J=1f?\'✓\':\'✗\';j.k(\'6F\').N.1K=\'3e\'}r 39(){j.k(\'46\').u.U(\'V\')}r 6M(q,3Q){d 1X=j.k(\'46\');1X.2F=\'6L-1X V 1w\';j.k(\'6G\').J=\'✗\';d 1V=j.k(\'6F\');1V.N.1K=\'6E\';d 4o=j.k(\'93\');4o.Z=\'\';d 18=[\'A\',\'B\',\'C\',\'D\'];q.E.16((w,i)=>{d L=j.3R(\'L\');L.2F=\'1w-1V-w\';l(18[i]===q.v)L.u.T(\'1f-v\');l(18[i]===3Q&&3Q!==q.v)L.u.T(\'5U-v\');L.Z=`<1o>${18[i]}.</1o>${w}`;4o.3x(L)});d 2Z=j.k(\'94\');2Z.N.6I=\'3e\';2Z.N.38=\'1E%\';Y(()=>{2Z.N.6I=\'38 2s 9a\';2Z.N.38=\'0%\'},50);c.6U=Y(()=>{39();2m()},6J);d 3H=()=>{2B(c.6U);39();2m();j.5L(\'2c\',3H);j.5L(\'3u\',4n)};d 4n=(e)=>{l(e.9b===\'99\'){e.2D();3H()}};Y(()=>{j.1D(\'2c\',3H,{98:1d});j.1D(\'3u\',4n)},1E)}r 6X(){d 2k=j.k(\'6Y\');2k.J=`🔥连击x${c.1k}`;2k.u.T(\'V\')}r 6W(){j.k(\'6Y\').u.U(\'V\')}r 3J(){d 6Z=j.1M(\'#1G .95\');6Z.16((h,i)=>h.u.1A(\'96\',i>=c.21))}r 6C(){j.k(\'4p\').u.T(\'V\')}r 2m(){l(c.1h<c.K.R-1){c.1h++;3E();32()}14{5O()}}r 6o(){1s.65();l(c.1a[c.1h]===1r)c.1a[c.1h]=\'?\';2m()}r 6k(){d y=c.1h;c.1n[y]=!c.1n[y];1s.2c();d H=j.k(\'33\');H.u.1A(\'17\',c.1n[y]);H.J=c.1n[y]?\'🚩 已标记 (F)\':\'🚩 标记不确定 (F)\'}r 4U(){3l(c.1O);d 1H=j.k(\'97\');1H.u.U(\'66\',\'61\');l(c.1a[c.1h]!==1r){1H.J=\'--\';O}l(c.28===0){1H.u.T(\'61\');1p 3y=0;1H.J=\'0\';c.1O=62(()=>{3y++;d m=2f.4z(3y/60);d s=3y%60;1H.J=m>0?`${m}:${s.4C().5S(2,\'0\')}`:s},2N)}14{c.2a=c.28;1H.J=c.2a;c.1O=62(()=>{c.2a--;1H.J=c.2a;l(c.2a<=5){1H.u.T(\'66\');1s.67()}l(c.2a<=0)35(\'?\')},2N)}}r 6n(){c.3m=1d;3l(c.1O);j.k(\'4R\').u.T(\'V\')}r 9t(){c.3m=P;j.k(\'4R\').u.U(\'V\');4U()}r 9u(){4H(\'重新开始？\',\'当前进度将丢失\',6g)}r 9S(){4H(\'退出答题？\',\'进度已自动保存\',()=>{3E();6h()})}r 4H(1U,3c,5P){j.k(\'69\').J=\'⚠️ 确认\';j.k(\'68\').Z=`<p N="1T-3r:3s; 4v-4w:1.9T; 3q-9R:9Q;">${1U}</p><p N="1T-3r:3s; 6c:6d(--1T-9N);">${3c}</p>`;j.k(\'5Y\').Z=`<1v 19="H 5Q"2h="1t(\'20\')">取消</1v><1v 19="H 4t"2h="1t(\'20\'); (${5P.4C()})();">确定</1v>`;2I(\'20\')}r 5O(){3l(c.1O);3S();d 4F=2f.4z((2y.2z()-c.1Z+c.2K)/2N);d m=2f.4z(4F/60);d s=4F%60;1p 1f=0,1w=0;c.2v=[];l(c.1i){c.K.16((q,i)=>{l(q.v){l(c.1a[i]===q.v)1f++;14{1w++;c.2v.9O({...q,3Q:c.1a[i]})}}});c.2b+=c.K.R;c.2L+=1f;l(c.2x>c.2p)c.2p=c.2x;1B()}j.k(\'9P\').J=c.K.R;j.k(\'9U\').J=c.1i?1f:\'--\';j.k(\'9V\').J=c.1i?1w:\'--\';j.k(\'a0\').J=`${m}:${s.4C().5S(2,\'0\')}`;j.k(\'a1\').N.1K=c.2v.R>0?\'9Z-3L\':\'3e\';5V();1P(\'9Y\');l(1w===0&&c.1i&&c.K.R>0)6u()}r 5V(){d 2i=j.k(\'9W\');2i.Z=\'\';d 18=[\'A\',\'B\',\'C\',\'D\'];c.K.16((q,y)=>{d 3i=c.1a[y];d 3K=q.v;d 5T=3i===\'?\';d 3W=3i===3K;d 3k=j.3R(\'L\');3k.2F=`1V-3k ${5T?\'9X\':(c.1i?(3W?\'1f\':\'1w\'):\'\')}`;1p 45=\'\';q.E.16((w,i)=>{1p 3o=\'1V-w\';l(c.1i&&18[i]===3K)3o+=\' 2j-1f\';l(18[i]===3i&&3i!==3K)3o+=\' 5U-1w\';45+=`<L 19="${3o}">${18[i]}.${w}</L>`});3k.Z=`<L 19="1V-q">${y+1}.${q.G}${c.1n[y]?\'<1N N="6c:6d(--9M)">[?]</1N>\':\'\'}</L><L 19="1V-9L">${45}</L>`;2i.3x(3k)})}r 6u(){d 6p=2y.2z()+9A;(r 6i(){6t({6r:3,6s:60,6w:55,6x:{x:0},6B:[\'#6A\',\'#6z\',\'#6y\',\'#6q\']});6t({6r:3,6s:9B,6w:55,6x:{x:1},6B:[\'#6A\',\'#6z\',\'#6y\',\'#6q\']});l(2y.2z()<6p)9z(6i)})()}r 6h(){3l(c.1O);j.k(\'4p\').u.U(\'V\');j.k(\'4R\').u.U(\'V\');1P(\'9y\');2S();40();41()}r 6g(){j.k(\'4p\').u.U(\'V\');2w(c.3f)}r 9v(){l(c.2v.R>0){c.1u=\'错题复习\';2w(c.2v)}}r 9w(){2S()}r 9x(){1t(\'6f\');6e()}r 9C(){3S();1t(\'6f\');2S()}j.1D(\'3u\',(e)=>{l(j.k(\'4V\').u.27(\'17\')){l(e.X===\'9D\')6j();O}l(j.k(\'4m\').u.27(\'V\')){d M=1y[1g];l(M.3t&&e.X===M.3t){2l(M.1L,P)}O}l(!j.k(\'4K\').u.27(\'17\'))O;l(c.3m)O;d X=e.X.9J();l([\'1\',\'2\',\'3\',\'4\'].9K(X)){d y=2n(X)-1;d 3h=j.1M(\'.w-H\');l(3h[y]&&!3h[y].u.27(\'3g\')){35([\'A\',\'B\',\'C\',\'D\'][y])}}l(X===\'f\')6k();l(X===\' \'){e.2D();6o()}l(X===\'9I\')6n()});j.1D(\'9H\',e=>e.2D());j.1D(\'3u\',e=>{l(e.X===\'9E\'||(e.9F&&e.9G&&e.X===\'I\'))e.2D()});r 4Z(){6m();4e();3P();40();41();2S();6l();2t()}4Z();',62,671,'||||||||||||APP|const||||||document|getElementById|if||||||function|||classList|answer|opt||idx||||||options||question|btn||innerText|questions|div|step|style|return|false||length||add|remove|show|str|key|setTimeout|innerHTML|||||else||forEach|active|labels|class|answers|data|JSON|true|li|correct|tutorialStep|currentIndex|hasCorrectAnswers|topic|streak|value|val|flags|strong|let|input|null|Sound|closeModal|currentTopic|button|wrong|AudioCtx|tutorialSteps|play|toggle|saveAppState|theme|addEventListener|100|holding|livesDisplay|badge|survivalMode|saved|display|highlight|querySelectorAll|span|timer|switchScreen|this|tutorial|new|text|title|review|charIndex|overlay|id|startTime|aiGuidanceModal|lives|recentTopics|gain|||showToast|contains|timeLimit|topicInput|timeLeft|totalAnswered|click|prompt|chip|Math|needHold|onclick|container|is|el|handleTutorialAction|nextQuestion|parseInt|intestine|bestStreak|isHolding|osc||startTypingAnimation|tutorialHoldTimer|wrongQuestions|startQuiz|maxStreak|Date|now|localStorage|clearTimeout|trim|preventDefault|the|className|500|AI|openModal|buildPrompt|elapsedTime|totalCorrect|hasSeenQuickAIGuide|1000|console|hasAgreedTos|instantFeedback|vibrate|updateContinueCard|hasSeenTutorial|tutorialDemo|dataset|answered|sine|What|bar||parse|renderQuestion|uncertainBtn|dark|handleAnswer||fixed|width|hideFeedback|throw|hasSeenAskAIGuide|desc|typingTimer|none|originalQuestions|disabled|btns|userAns|freq|item|clearInterval|isPaused|isDeleting|cls|Stomach|margin|align|center|needKey|keydown|Error|Small|appendChild|elapsed|of|holdTimer|replace|match||saveQuizProgress|phrase|target|skipHandler|currentTime|updateLivesUI|correctAns|flex|20px|git|navigator|updateSettingsUI|userAnswer|createElement|clearQuizProgress|tangyuan_progress|closest|ol|isCorrect|typingIndex|parseQuestions|error|updateStatsUI|updateRecentTopics|digestion|startHold|type|optsHTML|feedbackOverlay|300||updateTutorialUI|digestive|tosDetailModal|getItem|600|applyTheme|try|animatedPlaceholder|card|total|catch|endHold|handleInputChange|tutorialOverlay|skipKeyHandler|optsContainer|gameoverOverlay|hold|triangle|showAIGuide|primary|proceedAIGenerate|font|size|grid|duration|floor|TYPING_PHRASES|Array|toString|actions|content|totalTime|quick|openConfirmDialog|window|hidden|screenQuiz|fixJsonString|screenPaste|log|substring|___|addToRecentTopics|pauseOverlay|pendingAIMode|icon|startTimer|tosModal|panel|progress|fill|init||endsWith|slice|skipTutorial|isHold||JavaScript|funfacts|baseFreq|filter|setValueAtTime|url|ask|maxPitch|proceedAskAI|time|placeholder|json|pattern|textContent|writeText|showTutorial|height|line|padding|3rem|clipboard|mode|toggleDark|with|percent|Object|stringify|connect|message|round|PRESETS|assign|setItem|instructions|light|msg|left|tangyuan_prefs|volume|string|programming|removeEventListener|Produce|Pancreas|finishQuiz|callback|ghost|bile|padStart|isSkipped|user|renderReviewList|Which|organ|aiGuidanceActions|acid||stopwatch|setInterval|Where|does|skip|urgent|tick|aiGuidanceContent|aiGuidanceTitle|Break|down|color|var|quickContinue|continueModal|retryQuiz|goHome|frame|acceptTos|toggleUncertain|checkTos|loadAppState|pauseQuiz|skipQuestion|end|81b29a|particleCount|angle|confetti|launchConfetti|food|spread|origin|e9c46a|3d5a80|e07a5f|colors|showGameOver|Liver|block|wrongReview|feedbackIcon|part|transition|2000|Large|feedback|showWrongReview|qIdx|setupOptionEvents|undefined|Cecum|Rectum|showFeedback|submit|wrongReviewTimer|selected|hideStreak|showStreak|streakDisplay|hearts|min|Trypsin|1200|700|08|Lipase|float|Pepsin|HTML|define|Amylase|The|func|appendix|begin|split|start|break|Anus|destination|to|25000|200|def|attached|stop|Python|number|carbohydrate|blood|Filter|toast|FIFO|branch|insulin|2500|screen|main|CSS|stomach|Absorb|nutrients|create|produces|in|enzyme|saliva|begins|which|square|Esophagus|03|nutrient|most|05|absorption|occur|sawtooth|peristalsis|villi|Spleen|404||HTTP|Biomes|War|last|Gallbladder|stores|DROP|Civil|Git|tenses|removeItem|Mouth|Store|Trade|Slave|TRUNCATE|waste|REMOVE|area|surface|Increase|verb|Form|System|Digestive|English|enzymes|contractions|Muscle|exponentialRampToValueAtTime|protein|frequency|moving|system|Colon|Transatlantic|boolean|SQL|Chemical|100000|createGain|createOscillator|Absorption|DELETE|process|dispersal|fats|Secretion|Blender|AudioContext|suspended|resume|state|webkitAudioContext|Seed|01|tutorialDesc|onmouseleave|ontouchstart|ontouchend|onmouseup|onmousedown|8px|opacity|wrongReviewOpts|skipBarFill|heart|lost|timerBadge|once|Space|linear|code|right|optionsGrid|mouseup|mouseleave|touchstart|mousedown|tutorialTitle|jsonInput|loadPreset|touchend|sort|qText|progressFill|Question|showDetailedTos|random|some|resumeQuiz|confirmRestart|retryWrongQuestions|checkSavedProgress|continueProgress|screenHome|requestAnimationFrame|3000|120|discardProgress|Enter|F12|ctrlKey|shiftKey|contextmenu|escape|toLowerCase|includes|opts|warning|muted|push|resTotal|10px|bottom|confirmExit|1rem|resCorrect|resWrong|reviewList|skipped|screenResult|inline|resTime|btnRetryWrong|startFromJson|qNumber|statAccuracy|statStreak|statTotal|statsBar|focus|recentSection|recentChips|continueProgressText|continueBarFill|continueTopic|pasteInput|recent|addTag|handleInputBlur||themeIcon|toggleTheme|setAttribute|documentElement|hideDetailedTos|toggleInstantFeedback|toggleSurvival|typingText|handleInputFocus|setTimeLimit|toggleSetting|option|Markdown|continueCard|quickGenerate|called|encodeURIComponent|open|askAIGenerate|ChatGPT|gi|chat|jsonToggleIcon|https|_blank|Parsed|Fixed|isArray|processPastedData|After|jsonPanel|toggleJsonPanel'.split('|'),0,{}))
+</script>
+</body>
+</html>
